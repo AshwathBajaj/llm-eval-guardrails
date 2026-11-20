@@ -112,6 +112,9 @@ class InjectionConfig(BaseModel):
 
     enabled: bool = True
     action: Action = "block"
+    mode: Literal["regex", "classifier", "hybrid"] = "regex"
+    threshold: float | None = None
+    model_path: str | None = None
 
 
 class PIIConfig(BaseModel):

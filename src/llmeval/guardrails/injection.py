@@ -11,6 +11,7 @@ detector is complete.
 from __future__ import annotations
 
 import re
+from pathlib import Path
 
 Pattern = tuple[str, re.Pattern[str], str]
 
@@ -102,16 +103,64 @@ def highest_severity(matches: list[dict[str, str]]) -> str:
 class PromptInjectionCheck:
     name = "prompt_injection"
 
+    def __init__(
+        self,
+        mode: str = "regex",
+        threshold: float | None = None,
+        model_path: str | None = None,
+        classifier: object | None = None,
+    ) -> None:
+        if mode not in {"regex", "classifier", "hybrid"}:
+            raise ValueError("injection mode must be regex, classifier, or hybrid")
+        self.mode = mode
+        self._threshold = threshold
+        self._model_path = model_path
+        self._classifier = classifier
+
     def check(self, text: str) -> dict[str, object]:
-        matches = find_injections(text)
-        triggered = bool(matches)
-        if triggered:
+        use_regex = self.mode in {"regex", "hybrid"}
+        matches = find_injections(text) if use_regex else []
+        regex_hit = bool(matches)
+        probability = None
+        classifier_hit = False
+        run_classifier = self.mode == "classifier" or (self.mode == "hybrid" and not regex_hit)
+        if run_classifier:
+            classifier = self._load()
+            probability = float(classifier.probability(text))
+            cutoff = self._threshold if self._threshold is not None else float(classifier.threshold)
+            classifier_hit = probability >= cutoff
+        if self.mode == "regex":
+            triggered = regex_hit
+        elif self.mode == "classifier":
+            triggered = classifier_hit
+        else:
+            triggered = regex_hit or classifier_hit
+        if regex_hit and classifier_hit:
+            message = "regex and classifier both flagged an attack"
+        elif regex_hit:
             message = "prompt injection pattern matched"
+        elif classifier_hit:
+            message = "injection classifier scored above the threshold"
         else:
             message = "no injection pattern matched"
         return {
             "triggered": triggered,
-            "severity": highest_severity(matches),
+            "severity": "high" if triggered else "none",
             "message": message,
-            "details": {"matches": matches},
+            "details": {
+                "mode": self.mode,
+                "matches": matches,
+                "regex_hit": regex_hit,
+                "classifier_hit": classifier_hit,
+                "probability": probability,
+            },
         }
+
+    def _load(self):
+        if self._classifier is not None:
+            return self._classifier
+        from llmeval.guardrails.classifier import InjectionClassifier, default_model_dir
+
+        path = Path(self._model_path) if self._model_path else default_model_dir()
+        self._classifier = InjectionClassifier(path)
+        return self._classifier
