@@ -77,6 +77,10 @@ def _blocks(markdown: str) -> list[tuple]:
                 index += 1
             blocks.append(("table", rows))
             continue
+        if line.startswith("!["):
+            blocks.append(("image", line.strip()))
+            index += 1
+            continue
         if line.startswith("#"):
             level = len(line) - len(line.lstrip("#"))
             blocks.append(("heading", level, line[level:].strip()))
@@ -108,7 +112,7 @@ def _blocks(markdown: str) -> list[tuple]:
 def _continues_paragraph(line: str) -> bool:
     if not line.strip():
         return False
-    if line.startswith(("#", "-", "|", "`")):
+    if line.startswith(("#", "-", "|", "`", "!")):
         return False
     return re.match(r"\d+\. ", line) is None
 
@@ -253,6 +257,21 @@ def _table_row(pdf: Explainer, cells: list[str], widths: list[float], *, header:
     pdf.set_xy(pdf.l_margin, y_pos + row_height)
 
 
+def _image(pdf: Explainer, line: str) -> None:
+    match = re.search(r"\(([^)]+)\)", line)
+    if match is None:
+        return
+    path = ROOT / match.group(1)
+    if not path.is_file():
+        _paragraph(pdf, f"(missing image {match.group(1)})")
+        return
+    width = pdf.w - pdf.l_margin - pdf.r_margin
+    if pdf.get_y() > 200:
+        pdf.add_page()
+    pdf.image(str(path), x=pdf.l_margin, w=width)
+    pdf.ln(3)
+
+
 def render(source: Path, target: Path) -> None:
     pdf = Explainer(_fonts())
     for block in _blocks(source.read_text(encoding="utf-8")):
@@ -269,6 +288,8 @@ def render(source: Path, target: Path) -> None:
             _code(pdf, block[1])
         elif kind == "table":
             _table(pdf, block[1])
+        elif kind == "image":
+            _image(pdf, block[1])
     target.parent.mkdir(parents=True, exist_ok=True)
     pdf.output(str(target))
 

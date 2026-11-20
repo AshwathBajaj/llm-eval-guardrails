@@ -27,7 +27,8 @@ class GuardrailEngine:
     def __init__(self, config: GuardrailsConfig, embedder: TextEmbedder | None = None) -> None:
         self.config = config
         self.embedder = embedder if embedder is not None else build_embedder(config.embedder)
-        self._injection = PromptInjectionCheck()
+        self._input_injection = self._injection_check(config.input.prompt_injection)
+        self._output_injection = self._injection_check(config.output.prompt_injection)
         self._pii = PIICheck()
         self._toxicity = ToxicityCheck()
         topic = config.output.off_topic
@@ -74,6 +75,13 @@ class GuardrailEngine:
             findings=findings,
         )
 
+    def _injection_check(self, policy) -> PromptInjectionCheck:
+        return PromptInjectionCheck(
+            mode=policy.mode,
+            threshold=policy.threshold,
+            model_path=policy.model_path,
+        )
+
     def _plan(
         self,
         stage: str,
@@ -84,7 +92,7 @@ class GuardrailEngine:
             policy = self.config.input
             if policy.prompt_injection.enabled:
                 planned.append(
-                    ("prompt_injection", policy.prompt_injection.action, self._injection)
+                    ("prompt_injection", policy.prompt_injection.action, self._input_injection)
                 )
             if policy.pii.enabled:
                 planned.append(("pii", policy.pii.action, self._pii))
@@ -92,7 +100,9 @@ class GuardrailEngine:
 
         policy = self.config.output
         if policy.prompt_injection.enabled:
-            planned.append(("prompt_injection", policy.prompt_injection.action, self._injection))
+            planned.append(
+                ("prompt_injection", policy.prompt_injection.action, self._output_injection)
+            )
         if policy.toxicity.enabled:
             planned.append(("toxicity", policy.toxicity.action, self._toxicity))
         if policy.off_topic.enabled:

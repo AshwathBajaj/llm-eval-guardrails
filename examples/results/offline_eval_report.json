@@ -60,7 +60,11 @@
           {
             "action": "block",
             "details": {
-              "matches": []
+              "classifier_hit": false,
+              "matches": [],
+              "mode": "regex",
+              "probability": null,
+              "regex_hit": false
             },
             "guardrail": "prompt_injection",
             "message": "no injection pattern matched",
@@ -198,7 +202,11 @@
           {
             "action": "block",
             "details": {
-              "matches": []
+              "classifier_hit": false,
+              "matches": [],
+              "mode": "regex",
+              "probability": null,
+              "regex_hit": false
             },
             "guardrail": "prompt_injection",
             "message": "no injection pattern matched",
@@ -247,7 +255,11 @@
           {
             "action": "block",
             "details": {
-              "matches": []
+              "classifier_hit": false,
+              "matches": [],
+              "mode": "regex",
+              "probability": null,
+              "regex_hit": false
             },
             "guardrail": "prompt_injection",
             "message": "no injection pattern matched",
@@ -387,7 +399,11 @@
           {
             "action": "block",
             "details": {
-              "matches": []
+              "classifier_hit": false,
+              "matches": [],
+              "mode": "regex",
+              "probability": null,
+              "regex_hit": false
             },
             "guardrail": "prompt_injection",
             "message": "no injection pattern matched",
@@ -436,7 +452,11 @@
           {
             "action": "block",
             "details": {
-              "matches": []
+              "classifier_hit": false,
+              "matches": [],
+              "mode": "regex",
+              "probability": null,
+              "regex_hit": false
             },
             "guardrail": "prompt_injection",
             "message": "no injection pattern matched",
@@ -574,7 +594,11 @@
           {
             "action": "block",
             "details": {
-              "matches": []
+              "classifier_hit": false,
+              "matches": [],
+              "mode": "regex",
+              "probability": null,
+              "regex_hit": false
             },
             "guardrail": "prompt_injection",
             "message": "no injection pattern matched",
@@ -623,7 +647,11 @@
           {
             "action": "block",
             "details": {
-              "matches": []
+              "classifier_hit": false,
+              "matches": [],
+              "mode": "regex",
+              "probability": null,
+              "regex_hit": false
             },
             "guardrail": "prompt_injection",
             "message": "no injection pattern matched",
@@ -764,7 +792,11 @@
           {
             "action": "block",
             "details": {
-              "matches": []
+              "classifier_hit": false,
+              "matches": [],
+              "mode": "regex",
+              "probability": null,
+              "regex_hit": false
             },
             "guardrail": "prompt_injection",
             "message": "no injection pattern matched",
@@ -813,7 +845,11 @@
           {
             "action": "block",
             "details": {
-              "matches": []
+              "classifier_hit": false,
+              "matches": [],
+              "mode": "regex",
+              "probability": null,
+              "regex_hit": false
             },
             "guardrail": "prompt_injection",
             "message": "no injection pattern matched",
@@ -951,7 +987,11 @@
           {
             "action": "block",
             "details": {
-              "matches": []
+              "classifier_hit": false,
+              "matches": [],
+              "mode": "regex",
+              "probability": null,
+              "regex_hit": false
             },
             "guardrail": "prompt_injection",
             "message": "no injection pattern matched",
@@ -1000,7 +1040,11 @@
           {
             "action": "block",
             "details": {
-              "matches": []
+              "classifier_hit": false,
+              "matches": [],
+              "mode": "regex",
+              "probability": null,
+              "regex_hit": false
             },
             "guardrail": "prompt_injection",
             "message": "no injection pattern matched",
@@ -1145,7 +1189,11 @@
           {
             "action": "block",
             "details": {
-              "matches": []
+              "classifier_hit": false,
+              "matches": [],
+              "mode": "regex",
+              "probability": null,
+              "regex_hit": false
             },
             "guardrail": "prompt_injection",
             "message": "no injection pattern matched",
@@ -1194,7 +1242,11 @@
           {
             "action": "block",
             "details": {
-              "matches": []
+              "classifier_hit": false,
+              "matches": [],
+              "mode": "regex",
+              "probability": null,
+              "regex_hit": false
             },
             "guardrail": "prompt_injection",
             "message": "no injection pattern matched",
@@ -1332,7 +1384,11 @@
           {
             "action": "block",
             "details": {
-              "matches": []
+              "classifier_hit": false,
+              "matches": [],
+              "mode": "regex",
+              "probability": null,
+              "regex_hit": false
             },
             "guardrail": "prompt_injection",
             "message": "no injection pattern matched",
@@ -1381,7 +1437,11 @@
           {
             "action": "block",
             "details": {
-              "matches": []
+              "classifier_hit": false,
+              "matches": [],
+              "mode": "regex",
+              "probability": null,
+              "regex_hit": false
             },
             "guardrail": "prompt_injection",
             "message": "no injection pattern matched",
@@ -1522,7 +1582,11 @@
           {
             "action": "block",
             "details": {
-              "matches": []
+              "classifier_hit": false,
+              "matches": [],
+              "mode": "regex",
+              "probability": null,
+              "regex_hit": false
             },
             "guardrail": "prompt_injection",
             "message": "no injection pattern matched",
