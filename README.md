@@ -1,3 +1,15 @@
+---
+title: llmeval
+emoji: "🛡️"
+colorFrom: stone
+colorTo: orange
+sdk: gradio
+sdk_version: 5.49.1
+app_file: app.py
+pinned: false
+license: mit
+---
+
 # llmeval
 
 A small, readable toolkit for scoring retrieval-augmented generation (RAG) answers and for checking prompts and completions against a written policy. The benchmark baseline is a local CPU model: MiniLM embeddings and a small NLI cross-encoder. The judge in that run is a deterministic mock, and the report names both. Tests and the demo stay on a hashing embedder so they do not download weights.
@@ -9,7 +21,7 @@ A RAG system can sound confident and still be wrong. The retrieved passages can 
 llmeval puts those checks in one place.
 
 - **Evaluation.** Faithfulness, answer relevance, context precision, context recall, and a hallucination check. Each one reports a local baseline and an LLM-judge score.
-- **Guardrails.** Input checks for prompt injection and personally identifiable information (PII), output checks for toxicity, off-topic answers, and JSON Schema. The policy is a YAML file.
+- **Guardrails.** Input checks for prompt injection and personally identifiable information (PII), output checks for toxicity, off-topic answers, and JSON Schema. Injection can be a regex, a fine-tuned MiniLM classifier, or a hybrid of the two. The policy is a YAML file.
 - **Red team.** A curated set of adversarial and benign cases. A case passes only when the guardrail decision matches the expected decision, so a policy that blocks every string does not score 100%.
 - **Reports.** JSON, Markdown, and HTML. The numbers in `examples/results/` were produced by the commands below.
 
@@ -108,6 +120,50 @@ pass rate 0.6113  (228/373)
 
 One benign jailbreak-set row was redacted because it contains a phone number, so it failed an `allow` expectation. Full tables are in `examples/results/`. `offline_eval_report.json` is the hashing-embedder run on the eight-row slice, which is what CI reproduces. It is not the table above.
 
+## Injection detector
+
+The regex blocks obvious phrases and misses paraphrases. On the held-out test set it caught 33 of 176 attacks and made 0 mistakes on 176 benign prompts. A fine-tuned MiniLM classifier, with the threshold chosen only on a validation split, caught 160 of 176 attacks and made 1 mistake on the benign prompts.
+
+Training used the Apache-2.0 train splits of `deepset/prompt-injections` and `jackhhao/jailbreak-classification`. Seven training rows were removed because the same text appeared in the test set. The test set is the deepset test split plus the jailbreak prompts already in the red-team file. It was not used to train or to pick the threshold. The chosen threshold is 0.85.
+
+| Detector | Precision | Recall | F1 | False-positive rate | Mean latency |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Regex | 1.0000 | 0.1875 | 0.3158 | 0.0000 | 0.0702 ms |
+| Classifier | 0.9938 | 0.9091 | 0.9496 | 0.0057 | 7.2965 ms |
+| Hybrid | 0.9938 | 0.9091 | 0.9496 | 0.0057 | 6.0801 ms |
+
+Hybrid is regex first, then the classifier only if the regex does not match. On this test set the regex did not catch any attack the classifier missed, so the precision, recall, and F1 match the classifier. Hybrid is a little faster because some prompts stop at the regex. Latency is the mean time per prompt after one warmup call.
+
+![Confusion matrices for regex, classifier, and hybrid](docs/images/injection_confusion.png)
+
+The counts in that plot are the test set of 176 benign prompts and 176 attacks. Regex: 176 true benign, 0 false alarms, 143 missed attacks, 33 caught attacks. Classifier and hybrid: 175 true benign, 1 false alarm, 16 missed attacks, 160 caught attacks.
+
+Set `mode: regex`, `mode: classifier`, or `mode: hybrid` on `prompt_injection` in a guardrails YAML. The default stays `regex`, which is what CI and the checked-in red-team report use.
+
+## Live demo
+
+`app.py` is a Gradio app. Paste a question, a context, and an answer. It shows the NLI faithfulness baseline, the MiniLM relevance baseline, the mock judge beside them, and the regex, classifier, and hybrid verdicts on the question.
+
+```bash
+python -m pip install -r requirements.txt
+python -m pip install -e .
+python app.py
+```
+
+Open `http://127.0.0.1:7860`.
+
+![Gradio demo after scoring a grounded answer and a jailbreak the regex misses](docs/images/demo.png)
+
+### Deploy on Hugging Face Spaces
+
+This repo was not deployed from here, because there is no Hugging Face token. To deploy it yourself:
+
+1. Create a new Space at https://huggingface.co/new-space and choose Gradio as the SDK.
+2. Push this repository to that Space, including `app.py`, `requirements.txt`, `src/`, and `models/injection-minilm/`.
+3. The README front matter already sets `sdk: gradio`, `sdk_version: 5.49.1`, and `app_file: app.py`. Leave that block at the top of `README.md`.
+4. In the Space settings, the hardware can stay on CPU. The first start downloads MiniLM and the NLI model. The injection classifier is the file already in `models/injection-minilm/`.
+5. Wait until the Space logs say the app is running, then open the Space URL. The same page you ran locally should appear.
+
 ## Layout
 
 ```text
@@ -117,14 +173,16 @@ src/llmeval/
   embeddings.py     hashing embedder
   backends/         mock judge and OpenAI-compatible client
   metrics/          faithfulness, relevance, context, hallucination
-  guardrails/       injection, PII, toxicity, topic, JSON Schema
+  guardrails/       injection regex and classifier, PII, toxicity, topic, JSON Schema
   redteam/          case runner
   report/           JSON, Markdown, HTML
   demo/             FastAPI app and the one-page UI
 configs/            eval, guardrail, and red-team YAML
 data/               sample RAG rows and red-team cases
 examples/results/   reports from the mock backend
-docs/               interview explainer (Markdown and PDF)
+docs/               learning guide (Markdown and PDF) and plots
+models/             fine-tuned injection classifier
+app.py              Gradio demo
 ```
 
 ## Design decisions
