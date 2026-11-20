@@ -1,5 +1,6 @@
-gradio==5.49.1
-torch>=2.2
+--extra-index-url https://download.pytorch.org/whl/cpu
+streamlit==1.41.1
+torch==2.6.0+cpu
 transformers>=4.44
 sentence-transformers>=3.0
 pydantic>=2.6

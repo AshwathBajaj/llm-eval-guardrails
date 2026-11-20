@@ -142,27 +142,39 @@ Set `mode: regex`, `mode: classifier`, or `mode: hybrid` on `prompt_injection` i
 
 ## Live demo
 
-`app.py` is a Gradio app. Paste a question, a context, and an answer. It shows the NLI faithfulness baseline, the MiniLM relevance baseline, the mock judge beside them, and the regex, classifier, and hybrid verdicts on the question.
+URL: https://YOUR-APP-NAME.streamlit.app (placeholder until you deploy)
+
+`streamlit_app.py` is the free demo. It has the same checks as the Gradio app: a question, one context, and an answer; the NLI faithfulness baseline; the MiniLM relevance baseline; the mock judge labeled as a word-overlap scorer; and regex, classifier, and hybrid verdicts with the classifier probability. Three buttons load a grounded HaluEval row, the hallucinated answer from that same row, and a jailbreak the regex misses.
+
+`requirements.txt` is what Streamlit Community Cloud installs. It pulls CPU-only PyTorch from the PyTorch wheel index so the free machine does not load the CUDA build. Tests do not use that file. Install tests with `pip install -e ".[dev]"`. Install the demo in a separate environment with `pip install -r requirements.txt` and `pip install -e .`. The Gradio file `app.py` is optional and local: `pip install gradio==5.49.1` and `python app.py`.
 
 ```bash
 python -m pip install -r requirements.txt
 python -m pip install -e .
-python app.py
+python -m streamlit run streamlit_app.py
 ```
 
-Open `http://127.0.0.1:7860`.
+Open `http://127.0.0.1:8501`.
 
-![Gradio demo after scoring a grounded answer and a jailbreak the regex misses](docs/images/demo.png)
+![Streamlit demo on the jailbreak example](docs/images/streamlit_demo.png)
 
-### Deploy on Hugging Face Spaces
+On a local run with the CPU PyTorch wheel, the Streamlit process peaked at 950.1 MB RSS while scoring the three examples. That is under the free tier's about-1 GB limit. The CUDA wheel of PyTorch was larger and is not what `requirements.txt` installs.
 
-This repo was not deployed from here, because there is no Hugging Face token. To deploy it yourself:
+### Deploy on Streamlit Community Cloud
 
-1. Create a new Space at https://huggingface.co/new-space and choose Gradio as the SDK.
-2. Push this repository to that Space, including `app.py`, `requirements.txt`, `src/`, and `models/injection-minilm/`.
-3. The README front matter already sets `sdk: gradio`, `sdk_version: 5.49.1`, and `app_file: app.py`. Leave that block at the top of `README.md`.
-4. In the Space settings, the hardware can stay on CPU. The first start downloads MiniLM and the NLI model. The injection classifier is the file already in `models/injection-minilm/`.
-5. Wait until the Space logs say the app is running, then open the Space URL. The same page you ran locally should appear.
+1. Sign in at https://share.streamlit.io and choose Create app.
+2. Repository: `AshwathBajaj/llm-eval-guardrails`.
+3. Branch: `main`.
+4. Main file path: `streamlit_app.py`.
+5. Open Advanced settings and set the Python version to 3.11. Streamlit Cloud no longer reads `runtime.txt`, so the version is chosen there.
+6. Deploy. The first boot installs `requirements.txt`, including CPU PyTorch, and downloads MiniLM and the NLI model. The fine-tuned classifier is already in `models/injection-minilm/`.
+7. When the app is up, copy its `*.streamlit.app` URL into the placeholder at the top of this section.
+
+### Gradio, if you still want it locally
+
+`app.py` is the same demo in Gradio. Hugging Face Spaces now asks for a PRO plan for this kind of app, so the free host is Streamlit. To run Gradio on your own machine, install `gradio==5.49.1` and run `python app.py`, then open `http://127.0.0.1:7860`.
+
+![Gradio demo](docs/images/demo.png)
 
 ## Layout
 
@@ -182,7 +194,8 @@ data/               sample RAG rows and red-team cases
 examples/results/   reports from the mock backend
 docs/               learning guide (Markdown and PDF) and plots
 models/             fine-tuned injection classifier
-app.py              Gradio demo
+app.py              optional Gradio demo
+streamlit_app.py    Streamlit Community Cloud demo
 ```
 
 ## Design decisions
