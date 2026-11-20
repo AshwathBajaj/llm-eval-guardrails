@@ -159,7 +159,31 @@ These numbers are from `configs/eval.benchmark.yaml` on the first 200 HaluEval Q
 
 Right answers pass the faithfulness line 148 of 200 times. Hallucinated answers pass it 62 of 200 times. Relevance is higher for hallucinated answers because those answers are full sentences and many right answers are short spans. Precision and recall match across the two groups because both copies share the passage and the ground truth.
 
-## How the demo works, and how to deploy it
+## The Streamlit demo
+
+Streamlit is a Python library that turns a script into a web page. You write normal Python, call `st.button` and `st.metric`, and Streamlit reruns the script when someone clicks. Analogy: a form that re-reads your script on every click. Mechanism: `streamlit_app.py` at the repository root, which is the file Streamlit Community Cloud looks for by default.
+
+The page asks for a question, one context passage, and an answer. It then shows the NLI faithfulness baseline, the MiniLM relevance baseline, and the mock judge. The mock judge is a word-overlap scorer, not a neural model, and the page says so. Under that it shows three injection verdicts on the question: regex, classifier, and hybrid, including the classifier probability.
+
+Three buttons fill the form. Grounded uses the first HaluEval right answer. Hallucinated uses the hallucinated answer from that same row, the sentence "First for Women was started first." Jailbreak uses a short public jailbreak the regex does not match.
+
+`@st.cache_resource` keeps the loaded models in memory across clicks. Without it, every click would load MiniLM, the NLI model, and the classifier again. That would be slow and would allocate the weights over and over. With it, the first click pays the load and later clicks reuse the same objects.
+
+The free Streamlit machine has about 1 GB of RAM. The CUDA build of PyTorch is too heavy for that. `requirements.txt` points pip at the CPU wheel index and pins `torch==2.6.0+cpu`. On a local run with that CPU wheel, the Streamlit process peaked at 950.1 MB RSS while scoring the three examples.
+
+![Streamlit demo](docs/images/streamlit_demo.png)
+
+Deploy steps, entered on https://share.streamlit.io :
+
+1. Repository: `AshwathBajaj/llm-eval-guardrails`.
+2. Branch: `main`.
+3. Main file path: `streamlit_app.py`.
+4. Advanced settings, Python version: 3.11. Streamlit Cloud does not use `runtime.txt` anymore, so the version is selected there.
+5. Deploy, wait for the install, then replace the placeholder URL in the README with the `*.streamlit.app` address.
+
+The app was not deployed from this environment. There is no Streamlit Cloud login here.
+
+## How the Gradio demo works
 
 `app.py` is a Gradio app. Gradio is a small web form in front of a Python function. The function calls the same metric classes and the same injection check as the CLI.
 
