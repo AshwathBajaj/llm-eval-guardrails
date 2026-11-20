@@ -1,0 +1,10 @@
+# Run the curated cases through configs/guardrails.yaml.
+# Paths are relative to this file.
+
+guardrails: guardrails.yaml
+cases: ../data/redteam_cases.yaml
+
+output:
+  json_path: ../examples/results/redteam_report.json
+  markdown_path: ../examples/results/redteam_report.md
+  html_path: ../examples/results/redteam_report.html

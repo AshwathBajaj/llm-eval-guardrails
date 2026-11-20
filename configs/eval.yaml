@@ -1,0 +1,38 @@
+# Score the sample RAG set with the offline judge.
+# Paths are relative to this file.
+
+backend:
+  type: mock
+  model: mock-judge-v1
+
+dataset: ../data/sample_rag.jsonl
+
+embedder:
+  dim: 256
+
+scoring:
+  decision: blend
+  blend_judge_weight: 0.5
+
+metrics:
+  faithfulness:
+    threshold: 0.60
+    support_threshold: 0.55
+  answer_relevance:
+    threshold: 0.35
+  context_precision:
+    threshold: 0.50
+    relevance_threshold: 0.18
+  context_recall:
+    threshold: 0.50
+    support_threshold: 0.55
+  hallucination:
+    threshold: 0.45
+    support_threshold: 0.55
+
+guardrails: guardrails.yaml
+
+output:
+  json_path: ../examples/results/eval_report.json
+  markdown_path: ../examples/results/eval_report.md
+  html_path: ../examples/results/eval_report.html
