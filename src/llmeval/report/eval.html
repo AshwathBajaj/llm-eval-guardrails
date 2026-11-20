@@ -17,9 +17,14 @@
   </style>
 </head>
 <body>
-  <p class="meta">llmeval {{ report.version }} · {{ report.backend }} · {{ report.scoring }}</p>
+  <p class="meta">llmeval {{ report.version }} · judge {{ report.backend }} · baseline {{ report.baseline_model }}
+    {% if report.nli_model %} · nli {{ report.nli_model }}{% endif %} · {{ report.scoring }}</p>
   <h1>Evaluation report</h1>
   <p>{{ report.example_count }} examples from {{ report.dataset }}.</p>
+  {% if report.dataset_info %}
+  <p>{{ report.dataset_info.name }}. License: {{ report.dataset_info.license }}.
+    {{ report.dataset_info.slice }}</p>
+  {% endif %}
   <h2>Aggregates</h2>
   <table>
     <thead>
@@ -36,6 +41,21 @@
       {% endfor %}
     </tbody>
   </table>
+  {% for group in report.groups %}
+  <h2>{{ group.label }} ({{ group.example_count }})</h2>
+  <table>
+    <thead><tr><th>Metric</th><th class="num">Mean</th><th>Passed</th></tr></thead>
+    <tbody>
+      {% for aggregate in group.aggregates %}
+      <tr>
+        <td>{{ aggregate.name }}</td>
+        <td class="num">{{ "%.4f"|format(aggregate.mean) }}</td>
+        <td>{{ aggregate.passed }}/{{ aggregate.passed + aggregate.failed }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endfor %}
   {% for example in report.examples %}
   <h2>{{ example.id }}</h2>
   <p>{{ example.question }}</p>

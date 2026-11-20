@@ -1,0 +1,51 @@
+# Neural baseline on the HaluEval QA slice. The judge stays the mock so this
+# run needs no API key. Headline scores are the baseline (scoring.decision).
+# Paths are relative to this file.
+
+backend:
+  type: mock
+  model: mock-judge-v1
+
+dataset: ../data/halueval_qa_slice.jsonl
+
+dataset_info:
+  name: HaluEval QA
+  source: https://huggingface.co/datasets/pminervini/HaluEval
+  license: Apache-2.0
+  slice: first 200 rows of the qa split, each emitted with right_answer and with hallucinated_answer (400 examples)
+
+embedder:
+  type: sentence-transformers
+  model: sentence-transformers/all-MiniLM-L6-v2
+  device: cpu
+
+nli:
+  enabled: true
+  model: cross-encoder/nli-MiniLM2-L6-H768
+  device: cpu
+
+scoring:
+  decision: baseline
+
+metrics:
+  faithfulness:
+    threshold: 0.50
+    support_threshold: 0.50
+  answer_relevance:
+    threshold: 0.30
+  context_precision:
+    threshold: 0.50
+    relevance_threshold: 0.35
+  context_recall:
+    threshold: 0.50
+    support_threshold: 0.50
+  hallucination:
+    threshold: 0.50
+    support_threshold: 0.50
+
+guardrails: guardrails.benchmark.yaml
+
+output:
+  json_path: ../examples/results/eval_report.json
+  markdown_path: ../examples/results/eval_report.md
+  html_path: ../examples/results/eval_report.html

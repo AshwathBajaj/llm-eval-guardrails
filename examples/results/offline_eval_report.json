@@ -1,0 +1,1665 @@
+{
+  "aggregates": [
+    {
+      "failed": 8,
+      "higher_is_better": true,
+      "mean": 0.3992,
+      "name": "faithfulness",
+      "passed": 0,
+      "threshold": 0.6
+    },
+    {
+      "failed": 3,
+      "higher_is_better": true,
+      "mean": 0.3645,
+      "name": "answer_relevance",
+      "passed": 5,
+      "threshold": 0.35
+    },
+    {
+      "failed": 0,
+      "higher_is_better": true,
+      "mean": 0.875,
+      "name": "context_precision",
+      "passed": 8,
+      "threshold": 0.5
+    },
+    {
+      "failed": 0,
+      "higher_is_better": true,
+      "mean": 0.5,
+      "name": "context_recall",
+      "passed": 8,
+      "threshold": 0.5
+    },
+    {
+      "failed": 1,
+      "higher_is_better": false,
+      "mean": 0.4299,
+      "name": "hallucination",
+      "passed": 7,
+      "threshold": 0.45
+    }
+  ],
+  "backend": "mock:mock-judge-v1",
+  "baseline_model": "hashing-256",
+  "dataset": "data/sample_rag.jsonl",
+  "dataset_info": {
+    "license": "Apache-2.0",
+    "name": "HaluEval QA tiny slice",
+    "slice": "first 4 rows of the qa split, right answer and hallucinated answer",
+    "source": "https://huggingface.co/datasets/pminervini/HaluEval"
+  },
+  "example_count": 8,
+  "examples": [
+    {
+      "id": "halueval-qa-0000-right",
+      "input_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          },
+          {
+            "action": "redact",
+            "details": {
+              "count": 0,
+              "labels": [],
+              "redacted_text": "Which magazine was started first Arthur's Magazine or First for Women?"
+            },
+            "guardrail": "pii",
+            "message": "no pii detected",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          }
+        ],
+        "output_text": "Which magazine was started first Arthur's Magazine or First for Women?",
+        "stage": "input",
+        "text": "Which magazine was started first Arthur's Magazine or First for Women?"
+      },
+      "label": "right",
+      "metrics": [
+        {
+          "baseline": 0.0,
+          "details": {
+            "claims": [
+              {
+                "claim": "Arthur's Magazine",
+                "support": 0.3173,
+                "supported": false
+              }
+            ],
+            "judge_reason": "Mean lexical coverage across 1 claim(s).",
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "faithfulness",
+          "passed": false,
+          "threshold": 0.6,
+          "value": 0.5
+        },
+        {
+          "baseline": 0.6559,
+          "details": {
+            "cosine": 0.6559,
+            "judge_reason": "Jaccard overlap between question and answer.",
+            "question_coverage": 0.4,
+            "token_f1": 0.5714
+          },
+          "higher_is_better": true,
+          "judge": 0.4,
+          "name": "answer_relevance",
+          "passed": true,
+          "threshold": 0.35,
+          "value": 0.528
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "contexts": [
+              {
+                "rank": 1,
+                "relevant": true,
+                "similarity": 0.4297
+              }
+            ],
+            "judge_reason": "Lexical context precision, relevant items first.",
+            "relevance_threshold": 0.18
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_precision",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 1.0
+        },
+        {
+          "baseline": 0.0,
+          "details": {
+            "judge_reason": "1 of 1 ground-truth sentence(s) were covered.",
+            "statements": [
+              {
+                "covered": false,
+                "statement": "Arthur's Magazine",
+                "support": 0.3173
+              }
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_recall",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 0.5
+        },
+        {
+          "baseline": 0.6827,
+          "details": {
+            "claims": [
+              {
+                "claim": "Arthur's Magazine",
+                "label": "neutral",
+                "risk": 0.6827,
+                "support": 0.3173
+              }
+            ],
+            "judge_reason": "0 of 1 claim(s) had lexical coverage under 0.5.",
+            "labels": {
+              "contradiction": 0,
+              "entailment": 0,
+              "neutral": 1
+            },
+            "novel_word_rate": 0.0,
+            "novel_words": [],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": false,
+          "judge": 0.0,
+          "name": "hallucination",
+          "passed": true,
+          "threshold": 0.45,
+          "value": 0.3413
+        }
+      ],
+      "output_guard": {
+        "decision": "block",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "toxicity",
+            "message": "no toxic language matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "hit_count": 0,
+              "hits": [],
+              "min_hits": 1,
+              "similarity": 0.0869,
+              "similarity_threshold": 0.4
+            },
+            "guardrail": "off_topic",
+            "message": "text is outside the configured topics",
+            "severity": "medium",
+            "stage": "output",
+            "triggered": true
+          }
+        ],
+        "output_text": "Arthur's Magazine",
+        "stage": "output",
+        "text": "Arthur's Magazine"
+      },
+      "question": "Which magazine was started first Arthur's Magazine or First for Women?"
+    },
+    {
+      "id": "halueval-qa-0000-hallucinated",
+      "input_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          },
+          {
+            "action": "redact",
+            "details": {
+              "count": 0,
+              "labels": [],
+              "redacted_text": "Which magazine was started first Arthur's Magazine or First for Women?"
+            },
+            "guardrail": "pii",
+            "message": "no pii detected",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          }
+        ],
+        "output_text": "Which magazine was started first Arthur's Magazine or First for Women?",
+        "stage": "input",
+        "text": "Which magazine was started first Arthur's Magazine or First for Women?"
+      },
+      "label": "hallucinated",
+      "metrics": [
+        {
+          "baseline": 0.0,
+          "details": {
+            "claims": [
+              {
+                "claim": "First for Women was started first.",
+                "support": 0.2218,
+                "supported": false
+              }
+            ],
+            "judge_reason": "Mean lexical coverage across 1 claim(s).",
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 0.6667,
+          "name": "faithfulness",
+          "passed": false,
+          "threshold": 0.6,
+          "value": 0.3333
+        },
+        {
+          "baseline": 0.681,
+          "details": {
+            "cosine": 0.681,
+            "judge_reason": "Jaccard overlap between question and answer.",
+            "question_coverage": 0.6,
+            "token_f1": 0.75
+          },
+          "higher_is_better": true,
+          "judge": 0.6,
+          "name": "answer_relevance",
+          "passed": true,
+          "threshold": 0.35,
+          "value": 0.6405
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "contexts": [
+              {
+                "rank": 1,
+                "relevant": true,
+                "similarity": 0.4297
+              }
+            ],
+            "judge_reason": "Lexical context precision, relevant items first.",
+            "relevance_threshold": 0.18
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_precision",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 1.0
+        },
+        {
+          "baseline": 0.0,
+          "details": {
+            "judge_reason": "1 of 1 ground-truth sentence(s) were covered.",
+            "statements": [
+              {
+                "covered": false,
+                "statement": "Arthur's Magazine",
+                "support": 0.3173
+              }
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_recall",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 0.5
+        },
+        {
+          "baseline": 0.7782,
+          "details": {
+            "claims": [
+              {
+                "claim": "First for Women was started first.",
+                "label": "neutral",
+                "risk": 0.7782,
+                "support": 0.2218
+              }
+            ],
+            "judge_reason": "0 of 1 claim(s) had lexical coverage under 0.5.",
+            "labels": {
+              "contradiction": 0,
+              "entailment": 0,
+              "neutral": 1
+            },
+            "novel_word_rate": 0.3333,
+            "novel_words": [
+              "started"
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": false,
+          "judge": 0.0,
+          "name": "hallucination",
+          "passed": true,
+          "threshold": 0.45,
+          "value": 0.3891
+        }
+      ],
+      "output_guard": {
+        "decision": "block",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "toxicity",
+            "message": "no toxic language matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "hit_count": 0,
+              "hits": [],
+              "min_hits": 1,
+              "similarity": 0.0915,
+              "similarity_threshold": 0.4
+            },
+            "guardrail": "off_topic",
+            "message": "text is outside the configured topics",
+            "severity": "medium",
+            "stage": "output",
+            "triggered": true
+          }
+        ],
+        "output_text": "First for Women was started first.",
+        "stage": "output",
+        "text": "First for Women was started first."
+      },
+      "question": "Which magazine was started first Arthur's Magazine or First for Women?"
+    },
+    {
+      "id": "halueval-qa-0001-right",
+      "input_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          },
+          {
+            "action": "redact",
+            "details": {
+              "count": 0,
+              "labels": [],
+              "redacted_text": "The Oberoi family is part of a hotel company that has a head office in what city?"
+            },
+            "guardrail": "pii",
+            "message": "no pii detected",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          }
+        ],
+        "output_text": "The Oberoi family is part of a hotel company that has a head office in what city?",
+        "stage": "input",
+        "text": "The Oberoi family is part of a hotel company that has a head office in what city?"
+      },
+      "label": "right",
+      "metrics": [
+        {
+          "baseline": 0.0,
+          "details": {
+            "claims": [
+              {
+                "claim": "Delhi",
+                "support": 0.1411,
+                "supported": false
+              }
+            ],
+            "judge_reason": "Mean lexical coverage across 1 claim(s).",
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "faithfulness",
+          "passed": false,
+          "threshold": 0.6,
+          "value": 0.5
+        },
+        {
+          "baseline": 0.0,
+          "details": {
+            "cosine": 0.0,
+            "judge_reason": "Jaccard overlap between question and answer.",
+            "question_coverage": 0.0,
+            "token_f1": 0.0
+          },
+          "higher_is_better": true,
+          "judge": 0.0,
+          "name": "answer_relevance",
+          "passed": false,
+          "threshold": 0.35,
+          "value": 0.0
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "contexts": [
+              {
+                "rank": 1,
+                "relevant": true,
+                "similarity": 0.5985
+              }
+            ],
+            "judge_reason": "Lexical context precision, relevant items first.",
+            "relevance_threshold": 0.18
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_precision",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 1.0
+        },
+        {
+          "baseline": 0.0,
+          "details": {
+            "judge_reason": "1 of 1 ground-truth sentence(s) were covered.",
+            "statements": [
+              {
+                "covered": false,
+                "statement": "Delhi",
+                "support": 0.1411
+              }
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_recall",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 0.5
+        },
+        {
+          "baseline": 0.8589,
+          "details": {
+            "claims": [
+              {
+                "claim": "Delhi",
+                "label": "neutral",
+                "risk": 0.8589,
+                "support": 0.1411
+              }
+            ],
+            "judge_reason": "0 of 1 claim(s) had lexical coverage under 0.5.",
+            "labels": {
+              "contradiction": 0,
+              "entailment": 0,
+              "neutral": 1
+            },
+            "novel_word_rate": 0.0,
+            "novel_words": [],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": false,
+          "judge": 0.0,
+          "name": "hallucination",
+          "passed": true,
+          "threshold": 0.45,
+          "value": 0.4295
+        }
+      ],
+      "output_guard": {
+        "decision": "block",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "toxicity",
+            "message": "no toxic language matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "hit_count": 0,
+              "hits": [],
+              "min_hits": 1,
+              "similarity": 0.0849,
+              "similarity_threshold": 0.4
+            },
+            "guardrail": "off_topic",
+            "message": "text is outside the configured topics",
+            "severity": "medium",
+            "stage": "output",
+            "triggered": true
+          }
+        ],
+        "output_text": "Delhi",
+        "stage": "output",
+        "text": "Delhi"
+      },
+      "question": "The Oberoi family is part of a hotel company that has a head office in what city?"
+    },
+    {
+      "id": "halueval-qa-0001-hallucinated",
+      "input_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          },
+          {
+            "action": "redact",
+            "details": {
+              "count": 0,
+              "labels": [],
+              "redacted_text": "The Oberoi family is part of a hotel company that has a head office in what city?"
+            },
+            "guardrail": "pii",
+            "message": "no pii detected",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          }
+        ],
+        "output_text": "The Oberoi family is part of a hotel company that has a head office in what city?",
+        "stage": "input",
+        "text": "The Oberoi family is part of a hotel company that has a head office in what city?"
+      },
+      "label": "hallucinated",
+      "metrics": [
+        {
+          "baseline": 0.0,
+          "details": {
+            "claims": [
+              {
+                "claim": "The Oberoi family's hotel company is based in Mumbai.",
+                "support": 0.4617,
+                "supported": false
+              }
+            ],
+            "judge_reason": "Mean lexical coverage across 1 claim(s).",
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 0.6667,
+          "name": "faithfulness",
+          "passed": false,
+          "threshold": 0.6,
+          "value": 0.3333
+        },
+        {
+          "baseline": 0.4556,
+          "details": {
+            "cosine": 0.4556,
+            "judge_reason": "Jaccard overlap between question and answer.",
+            "question_coverage": 0.4444,
+            "token_f1": 0.5333
+          },
+          "higher_is_better": true,
+          "judge": 0.3636,
+          "name": "answer_relevance",
+          "passed": true,
+          "threshold": 0.35,
+          "value": 0.4096
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "contexts": [
+              {
+                "rank": 1,
+                "relevant": true,
+                "similarity": 0.5985
+              }
+            ],
+            "judge_reason": "Lexical context precision, relevant items first.",
+            "relevance_threshold": 0.18
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_precision",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 1.0
+        },
+        {
+          "baseline": 0.0,
+          "details": {
+            "judge_reason": "1 of 1 ground-truth sentence(s) were covered.",
+            "statements": [
+              {
+                "covered": false,
+                "statement": "Delhi",
+                "support": 0.1411
+              }
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_recall",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 0.5
+        },
+        {
+          "baseline": 0.5383,
+          "details": {
+            "claims": [
+              {
+                "claim": "The Oberoi family's hotel company is based in Mumbai.",
+                "label": "neutral",
+                "risk": 0.5383,
+                "support": 0.4617
+              }
+            ],
+            "judge_reason": "0 of 1 claim(s) had lexical coverage under 0.5.",
+            "labels": {
+              "contradiction": 0,
+              "entailment": 0,
+              "neutral": 1
+            },
+            "novel_word_rate": 0.3333,
+            "novel_words": [
+              "based",
+              "mumbai"
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": false,
+          "judge": 0.0,
+          "name": "hallucination",
+          "passed": true,
+          "threshold": 0.45,
+          "value": 0.2692
+        }
+      ],
+      "output_guard": {
+        "decision": "block",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "toxicity",
+            "message": "no toxic language matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "hit_count": 0,
+              "hits": [],
+              "min_hits": 1,
+              "similarity": 0.0824,
+              "similarity_threshold": 0.4
+            },
+            "guardrail": "off_topic",
+            "message": "text is outside the configured topics",
+            "severity": "medium",
+            "stage": "output",
+            "triggered": true
+          }
+        ],
+        "output_text": "The Oberoi family's hotel company is based in Mumbai.",
+        "stage": "output",
+        "text": "The Oberoi family's hotel company is based in Mumbai."
+      },
+      "question": "The Oberoi family is part of a hotel company that has a head office in what city?"
+    },
+    {
+      "id": "halueval-qa-0002-right",
+      "input_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          },
+          {
+            "action": "redact",
+            "details": {
+              "count": 0,
+              "labels": [],
+              "redacted_text": "Musician and satirist Allie Goertz wrote a song about the \"The Simpsons\" character Milhouse, who Matt Groening named after who?"
+            },
+            "guardrail": "pii",
+            "message": "no pii detected",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          }
+        ],
+        "output_text": "Musician and satirist Allie Goertz wrote a song about the \"The Simpsons\" character Milhouse, who Matt Groening named after who?",
+        "stage": "input",
+        "text": "Musician and satirist Allie Goertz wrote a song about the \"The Simpsons\" character Milhouse, who Matt Groening named after who?"
+      },
+      "label": "right",
+      "metrics": [
+        {
+          "baseline": 0.0,
+          "details": {
+            "claims": [
+              {
+                "claim": "President Richard Nixon",
+                "support": 0.2218,
+                "supported": false
+              }
+            ],
+            "judge_reason": "Mean lexical coverage across 1 claim(s).",
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "faithfulness",
+          "passed": false,
+          "threshold": 0.6,
+          "value": 0.5
+        },
+        {
+          "baseline": 0.0,
+          "details": {
+            "cosine": -0.0565,
+            "judge_reason": "Jaccard overlap between question and answer.",
+            "question_coverage": 0.0,
+            "token_f1": 0.0
+          },
+          "higher_is_better": true,
+          "judge": 0.0,
+          "name": "answer_relevance",
+          "passed": false,
+          "threshold": 0.35,
+          "value": 0.0
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "contexts": [
+              {
+                "rank": 1,
+                "relevant": true,
+                "similarity": 0.5104
+              }
+            ],
+            "judge_reason": "Lexical context precision, relevant items first.",
+            "relevance_threshold": 0.18
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_precision",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 1.0
+        },
+        {
+          "baseline": 0.0,
+          "details": {
+            "judge_reason": "1 of 1 ground-truth sentence(s) were covered.",
+            "statements": [
+              {
+                "covered": false,
+                "statement": "President Richard Nixon",
+                "support": 0.2218
+              }
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_recall",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 0.5
+        },
+        {
+          "baseline": 0.7782,
+          "details": {
+            "claims": [
+              {
+                "claim": "President Richard Nixon",
+                "label": "neutral",
+                "risk": 0.7782,
+                "support": 0.2218
+              }
+            ],
+            "judge_reason": "0 of 1 claim(s) had lexical coverage under 0.5.",
+            "labels": {
+              "contradiction": 0,
+              "entailment": 0,
+              "neutral": 1
+            },
+            "novel_word_rate": 0.0,
+            "novel_words": [],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": false,
+          "judge": 0.0,
+          "name": "hallucination",
+          "passed": true,
+          "threshold": 0.45,
+          "value": 0.3891
+        }
+      ],
+      "output_guard": {
+        "decision": "block",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "toxicity",
+            "message": "no toxic language matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "hit_count": 0,
+              "hits": [],
+              "min_hits": 1,
+              "similarity": 0.1419,
+              "similarity_threshold": 0.4
+            },
+            "guardrail": "off_topic",
+            "message": "text is outside the configured topics",
+            "severity": "medium",
+            "stage": "output",
+            "triggered": true
+          }
+        ],
+        "output_text": "President Richard Nixon",
+        "stage": "output",
+        "text": "President Richard Nixon"
+      },
+      "question": "Musician and satirist Allie Goertz wrote a song about the \"The Simpsons\" character Milhouse, who Matt Groening named after who?"
+    },
+    {
+      "id": "halueval-qa-0002-hallucinated",
+      "input_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          },
+          {
+            "action": "redact",
+            "details": {
+              "count": 0,
+              "labels": [],
+              "redacted_text": "Musician and satirist Allie Goertz wrote a song about the \"The Simpsons\" character Milhouse, who Matt Groening named after who?"
+            },
+            "guardrail": "pii",
+            "message": "no pii detected",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          }
+        ],
+        "output_text": "Musician and satirist Allie Goertz wrote a song about the \"The Simpsons\" character Milhouse, who Matt Groening named after who?",
+        "stage": "input",
+        "text": "Musician and satirist Allie Goertz wrote a song about the \"The Simpsons\" character Milhouse, who Matt Groening named after who?"
+      },
+      "label": "hallucinated",
+      "metrics": [
+        {
+          "baseline": 0.0,
+          "details": {
+            "claims": [
+              {
+                "claim": "Allie Goertz wrote a song about Milhouse, a popular TV character, named after an influential political figure.",
+                "support": 0.2939,
+                "supported": false
+              }
+            ],
+            "judge_reason": "Mean lexical coverage across 1 claim(s).",
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 0.4545,
+          "name": "faithfulness",
+          "passed": false,
+          "threshold": 0.6,
+          "value": 0.2273
+        },
+        {
+          "baseline": 0.5833,
+          "details": {
+            "cosine": 0.497,
+            "judge_reason": "Jaccard overlap between question and answer.",
+            "question_coverage": 0.5833,
+            "token_f1": 0.6087
+          },
+          "higher_is_better": true,
+          "judge": 0.4375,
+          "name": "answer_relevance",
+          "passed": true,
+          "threshold": 0.35,
+          "value": 0.5104
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "contexts": [
+              {
+                "rank": 1,
+                "relevant": true,
+                "similarity": 0.5104
+              }
+            ],
+            "judge_reason": "Lexical context precision, relevant items first.",
+            "relevance_threshold": 0.18
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_precision",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 1.0
+        },
+        {
+          "baseline": 0.0,
+          "details": {
+            "judge_reason": "1 of 1 ground-truth sentence(s) were covered.",
+            "statements": [
+              {
+                "covered": false,
+                "statement": "President Richard Nixon",
+                "support": 0.2218
+              }
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_recall",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 0.5
+        },
+        {
+          "baseline": 0.7061,
+          "details": {
+            "claims": [
+              {
+                "claim": "Allie Goertz wrote a song about Milhouse, a popular TV character, named after an influential political figure.",
+                "label": "neutral",
+                "risk": 0.7061,
+                "support": 0.2939
+              }
+            ],
+            "judge_reason": "1 of 1 claim(s) had lexical coverage under 0.5.",
+            "labels": {
+              "contradiction": 0,
+              "entailment": 0,
+              "neutral": 1
+            },
+            "novel_word_rate": 0.5455,
+            "novel_words": [
+              "figure",
+              "influential",
+              "political",
+              "popular",
+              "song",
+              "wrote"
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": false,
+          "judge": 1.0,
+          "name": "hallucination",
+          "passed": false,
+          "threshold": 0.45,
+          "value": 0.8531
+        }
+      ],
+      "output_guard": {
+        "decision": "block",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "toxicity",
+            "message": "no toxic language matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "hit_count": 0,
+              "hits": [],
+              "min_hits": 1,
+              "similarity": 0.1015,
+              "similarity_threshold": 0.4
+            },
+            "guardrail": "off_topic",
+            "message": "text is outside the configured topics",
+            "severity": "medium",
+            "stage": "output",
+            "triggered": true
+          }
+        ],
+        "output_text": "Allie Goertz wrote a song about Milhouse, a popular TV character, named after an influential political figure.",
+        "stage": "output",
+        "text": "Allie Goertz wrote a song about Milhouse, a popular TV character, named after an influential political figure."
+      },
+      "question": "Musician and satirist Allie Goertz wrote a song about the \"The Simpsons\" character Milhouse, who Matt Groening named after who?"
+    },
+    {
+      "id": "halueval-qa-0003-right",
+      "input_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          },
+          {
+            "action": "redact",
+            "details": {
+              "count": 0,
+              "labels": [],
+              "redacted_text": "What nationality was James Henry Miller's wife?"
+            },
+            "guardrail": "pii",
+            "message": "no pii detected",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          }
+        ],
+        "output_text": "What nationality was James Henry Miller's wife?",
+        "stage": "input",
+        "text": "What nationality was James Henry Miller's wife?"
+      },
+      "label": "right",
+      "metrics": [
+        {
+          "baseline": 0.0,
+          "details": {
+            "claims": [
+              {
+                "claim": "American",
+                "support": 0.2776,
+                "supported": false
+              }
+            ],
+            "judge_reason": "Mean lexical coverage across 1 claim(s).",
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "faithfulness",
+          "passed": false,
+          "threshold": 0.6,
+          "value": 0.5
+        },
+        {
+          "baseline": 0.1884,
+          "details": {
+            "cosine": 0.1884,
+            "judge_reason": "Jaccard overlap between question and answer.",
+            "question_coverage": 0.0,
+            "token_f1": 0.0
+          },
+          "higher_is_better": true,
+          "judge": 0.0,
+          "name": "answer_relevance",
+          "passed": false,
+          "threshold": 0.35,
+          "value": 0.0942
+        },
+        {
+          "baseline": 0.0,
+          "details": {
+            "contexts": [
+              {
+                "rank": 1,
+                "relevant": false,
+                "similarity": 0.1578
+              }
+            ],
+            "judge_reason": "Lexical context precision, relevant items first.",
+            "relevance_threshold": 0.18
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_precision",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 0.5
+        },
+        {
+          "baseline": 0.0,
+          "details": {
+            "judge_reason": "1 of 1 ground-truth sentence(s) were covered.",
+            "statements": [
+              {
+                "covered": false,
+                "statement": "American",
+                "support": 0.2776
+              }
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_recall",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 0.5
+        },
+        {
+          "baseline": 0.7224,
+          "details": {
+            "claims": [
+              {
+                "claim": "American",
+                "label": "neutral",
+                "risk": 0.7224,
+                "support": 0.2776
+              }
+            ],
+            "judge_reason": "0 of 1 claim(s) had lexical coverage under 0.5.",
+            "labels": {
+              "contradiction": 0,
+              "entailment": 0,
+              "neutral": 1
+            },
+            "novel_word_rate": 0.0,
+            "novel_words": [],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": false,
+          "judge": 0.0,
+          "name": "hallucination",
+          "passed": true,
+          "threshold": 0.45,
+          "value": 0.3612
+        }
+      ],
+      "output_guard": {
+        "decision": "block",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "toxicity",
+            "message": "no toxic language matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "hit_count": 0,
+              "hits": [],
+              "min_hits": 1,
+              "similarity": -0.0293,
+              "similarity_threshold": 0.4
+            },
+            "guardrail": "off_topic",
+            "message": "text is outside the configured topics",
+            "severity": "medium",
+            "stage": "output",
+            "triggered": true
+          }
+        ],
+        "output_text": "American",
+        "stage": "output",
+        "text": "American"
+      },
+      "question": "What nationality was James Henry Miller's wife?"
+    },
+    {
+      "id": "halueval-qa-0003-hallucinated",
+      "input_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          },
+          {
+            "action": "redact",
+            "details": {
+              "count": 0,
+              "labels": [],
+              "redacted_text": "What nationality was James Henry Miller's wife?"
+            },
+            "guardrail": "pii",
+            "message": "no pii detected",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          }
+        ],
+        "output_text": "What nationality was James Henry Miller's wife?",
+        "stage": "input",
+        "text": "What nationality was James Henry Miller's wife?"
+      },
+      "label": "hallucinated",
+      "metrics": [
+        {
+          "baseline": 0.0,
+          "details": {
+            "claims": [
+              {
+                "claim": "James Henry Miller's wife was British.",
+                "support": 0.1865,
+                "supported": false
+              }
+            ],
+            "judge_reason": "Mean lexical coverage across 1 claim(s).",
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 0.6,
+          "name": "faithfulness",
+          "passed": false,
+          "threshold": 0.6,
+          "value": 0.3
+        },
+        {
+          "baseline": 0.8,
+          "details": {
+            "cosine": 0.7036,
+            "judge_reason": "Jaccard overlap between question and answer.",
+            "question_coverage": 0.8,
+            "token_f1": 0.8
+          },
+          "higher_is_better": true,
+          "judge": 0.6667,
+          "name": "answer_relevance",
+          "passed": true,
+          "threshold": 0.35,
+          "value": 0.7333
+        },
+        {
+          "baseline": 0.0,
+          "details": {
+            "contexts": [
+              {
+                "rank": 1,
+                "relevant": false,
+                "similarity": 0.1578
+              }
+            ],
+            "judge_reason": "Lexical context precision, relevant items first.",
+            "relevance_threshold": 0.18
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_precision",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 0.5
+        },
+        {
+          "baseline": 0.0,
+          "details": {
+            "judge_reason": "1 of 1 ground-truth sentence(s) were covered.",
+            "statements": [
+              {
+                "covered": false,
+                "statement": "American",
+                "support": 0.2776
+              }
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_recall",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 0.5
+        },
+        {
+          "baseline": 0.8135,
+          "details": {
+            "claims": [
+              {
+                "claim": "James Henry Miller's wife was British.",
+                "label": "neutral",
+                "risk": 0.8135,
+                "support": 0.1865
+              }
+            ],
+            "judge_reason": "0 of 1 claim(s) had lexical coverage under 0.5.",
+            "labels": {
+              "contradiction": 0,
+              "entailment": 0,
+              "neutral": 1
+            },
+            "novel_word_rate": 0.4,
+            "novel_words": [
+              "british",
+              "wife"
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": false,
+          "judge": 0.0,
+          "name": "hallucination",
+          "passed": true,
+          "threshold": 0.45,
+          "value": 0.4067
+        }
+      ],
+      "output_guard": {
+        "decision": "block",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "toxicity",
+            "message": "no toxic language matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "hit_count": 0,
+              "hits": [],
+              "min_hits": 1,
+              "similarity": 0.0841,
+              "similarity_threshold": 0.4
+            },
+            "guardrail": "off_topic",
+            "message": "text is outside the configured topics",
+            "severity": "medium",
+            "stage": "output",
+            "triggered": true
+          }
+        ],
+        "output_text": "James Henry Miller's wife was British.",
+        "stage": "output",
+        "text": "James Henry Miller's wife was British."
+      },
+      "question": "What nationality was James Henry Miller's wife?"
+    }
+  ],
+  "groups": [
+    {
+      "aggregates": [
+        {
+          "failed": 4,
+          "higher_is_better": true,
+          "mean": 0.2985,
+          "name": "faithfulness",
+          "passed": 0,
+          "threshold": 0.6
+        },
+        {
+          "failed": 0,
+          "higher_is_better": true,
+          "mean": 0.5735,
+          "name": "answer_relevance",
+          "passed": 4,
+          "threshold": 0.35
+        },
+        {
+          "failed": 0,
+          "higher_is_better": true,
+          "mean": 0.875,
+          "name": "context_precision",
+          "passed": 4,
+          "threshold": 0.5
+        },
+        {
+          "failed": 0,
+          "higher_is_better": true,
+          "mean": 0.5,
+          "name": "context_recall",
+          "passed": 4,
+          "threshold": 0.5
+        },
+        {
+          "failed": 1,
+          "higher_is_better": false,
+          "mean": 0.4795,
+          "name": "hallucination",
+          "passed": 3,
+          "threshold": 0.45
+        }
+      ],
+      "example_count": 4,
+      "label": "hallucinated"
+    },
+    {
+      "aggregates": [
+        {
+          "failed": 4,
+          "higher_is_better": true,
+          "mean": 0.5,
+          "name": "faithfulness",
+          "passed": 0,
+          "threshold": 0.6
+        },
+        {
+          "failed": 3,
+          "higher_is_better": true,
+          "mean": 0.1556,
+          "name": "answer_relevance",
+          "passed": 1,
+          "threshold": 0.35
+        },
+        {
+          "failed": 0,
+          "higher_is_better": true,
+          "mean": 0.875,
+          "name": "context_precision",
+          "passed": 4,
+          "threshold": 0.5
+        },
+        {
+          "failed": 0,
+          "higher_is_better": true,
+          "mean": 0.5,
+          "name": "context_recall",
+          "passed": 4,
+          "threshold": 0.5
+        },
+        {
+          "failed": 0,
+          "higher_is_better": false,
+          "mean": 0.3803,
+          "name": "hallucination",
+          "passed": 4,
+          "threshold": 0.45
+        }
+      ],
+      "example_count": 4,
+      "label": "right"
+    }
+  ],
+  "nli_model": null,
+  "project": "llmeval",
+  "scoring": "blend(judge=0.50)",
+  "version": "0.1.0"
+}

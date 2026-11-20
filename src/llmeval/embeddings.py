@@ -1,18 +1,32 @@
-"""Deterministic feature-hashing embedder.
+"""Text embedders.
 
-Word unigrams and character trigrams are hashed into a fixed vector. Cosine
-similarity is then reproducible and needs no model download. The vectors are
-a lexical baseline, not a neural encoder: a paraphrase that shares no content
-words will look unrelated. Swap this class for a neural embedder by keeping
-the ``embed`` and ``cosine`` methods.
+``HashingEmbedder`` is the offline baseline used by tests and CI. It needs no
+download. ``build_embedder`` can also construct a sentence-transformers model
+when the config asks for one. That import happens inside the function so the
+default install stays free of torch.
 """
 
 from __future__ import annotations
 
 import hashlib
 import math
+from typing import Protocol
 
+from llmeval.config import EmbedderConfig
 from llmeval.textutil import tokenize
+
+
+class TextEmbedder(Protocol):
+    name: str
+    semantic: bool
+
+    def cosine(self, left: str, right: str) -> float: ...
+
+
+class EntailmentModel(Protocol):
+    name: str
+
+    def score_many(self, pairs: list[tuple[str, str]]) -> list[dict[str, float]]: ...
 
 
 def _bucket(feature: str, dim: int) -> tuple[int, float]:
@@ -23,10 +37,13 @@ def _bucket(feature: str, dim: int) -> tuple[int, float]:
 
 
 class HashingEmbedder:
+    semantic = False
+
     def __init__(self, dim: int = 256) -> None:
         if dim < 16:
             raise ValueError("embedder dim must be at least 16")
         self.dim = dim
+        self.name = f"hashing-{dim}"
 
     def embed(self, text: str) -> list[float]:
         vector = [0.0] * self.dim
@@ -49,3 +66,17 @@ class HashingEmbedder:
         left_vector = self.embed(left)
         right_vector = self.embed(right)
         return float(sum(a * b for a, b in zip(left_vector, right_vector, strict=True)))
+
+
+def build_embedder(config: EmbedderConfig) -> TextEmbedder:
+    if config.type == "hash":
+        return HashingEmbedder(dim=config.dim)
+    if config.type == "sentence-transformers":
+        from llmeval.neural import SentenceTransformerEmbedder
+
+        return SentenceTransformerEmbedder(
+            config.model,
+            cache_dir=config.cache_dir,
+            device=config.device,
+        )
+    raise ValueError(f"unknown embedder type: {config.type}")

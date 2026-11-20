@@ -60,9 +60,9 @@
 </head>
 <body>
   <header>
-    <div class="kicker">local mock judge</div>
+    <div class="kicker">hashing baseline · mock judge</div>
     <h1>llmeval</h1>
-    <p>Score a RAG answer for grounding and relevance, then run the same text through the guardrail policy. Nothing on this page calls an external model.</p>
+    <p>Score a RAG answer for grounding and relevance, then run the same text through the guardrail policy. This page stays offline: the baseline is the hashing embedder and the judge is the lexical mock. The benchmark numbers use MiniLM and an NLI model, and they are in the README.</p>
   </header>
   <nav>
     <button type="button" class="active" data-tab="evaluate">Evaluate</button>
@@ -121,10 +121,10 @@
   <footer id="foot"></footer>
   <script>
     const sample = {
-      question: "What is retrieval-augmented generation?",
-      contexts: "Retrieval-augmented generation fetches relevant documents and passes them to a language model so the answer can cite source text.\n---\nA retriever ranks passages by similarity to the question before the generator writes an answer.",
-      answer: "Retrieval-augmented generation fetches relevant documents and passes them to a language model so the answer can cite source text.",
-      ground: "Retrieval-augmented generation fetches relevant documents and passes them to a language model so the answer can cite source text."
+      question: "Which magazine was started first Arthur's Magazine or First for Women?",
+      contexts: "Arthur's Magazine (1844–1846) was an American literary periodical published in Philadelphia in the 19th century.First for Women is a woman's magazine published by Bauer Media Group in the USA.",
+      answer: "Arthur's Magazine",
+      ground: "Arthur's Magazine"
     };
 
     function el(tag, text, className) {

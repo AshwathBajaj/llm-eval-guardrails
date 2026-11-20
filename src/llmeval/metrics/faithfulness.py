@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from llmeval.backends.base import LLMBackend
 from llmeval.config import MetricSpec, ScoringConfig
-from llmeval.embeddings import HashingEmbedder
+from llmeval.embeddings import EntailmentModel, TextEmbedder
 from llmeval.metrics.common import (
     best_support,
     call_judge,
@@ -27,28 +27,33 @@ class FaithfulnessMetric:
 
     def __init__(
         self,
-        embedder: HashingEmbedder,
+        embedder: TextEmbedder,
         backend: LLMBackend,
         spec: MetricSpec,
         scoring: ScoringConfig,
+        nli: EntailmentModel | None = None,
     ) -> None:
         self.embedder = embedder
         self.backend = backend
         self.spec = spec
         self.scoring = scoring
+        self.nli = nli
 
     def compute(self, example: RagExample) -> MetricResult:
         claims = claim_units(example.answer)
         rows: list[dict[str, object]] = []
         for claim in claims:
-            support, _evidence = best_support(claim, example.contexts, self.embedder)
-            rows.append(
-                {
-                    "claim": claim,
-                    "support": round4(support),
-                    "supported": support >= self.spec.support_threshold,
-                }
+            support, _evidence, probs = best_support(
+                claim, example.contexts, self.embedder, self.nli
             )
+            row: dict[str, object] = {
+                "claim": claim,
+                "support": round4(support),
+                "supported": support >= self.spec.support_threshold,
+            }
+            if probs is not None:
+                row["nli"] = probs
+            rows.append(row)
         baseline = sum(1 for row in rows if row["supported"]) / len(rows) if rows else 0.0
         judge, reason, error = call_judge(
             self.backend, self.name, _RUBRIC, example_sections(example)

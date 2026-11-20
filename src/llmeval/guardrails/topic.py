@@ -9,7 +9,7 @@ vocabulary passes even if the hashing embedder is unsure.
 
 from __future__ import annotations
 
-from llmeval.embeddings import HashingEmbedder
+from llmeval.embeddings import TextEmbedder
 from llmeval.scoring import round4
 from llmeval.textutil import content_words
 
@@ -38,7 +38,7 @@ class TopicCheck:
 
     def __init__(
         self,
-        embedder: HashingEmbedder,
+        embedder: TextEmbedder,
         *,
         allowed_topics: list[str],
         in_domain_terms: list[str],

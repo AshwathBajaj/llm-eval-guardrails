@@ -31,6 +31,12 @@ dev = [
 docs = [
   "fpdf2>=2.8",
 ]
+neural = [
+  "sentence-transformers>=3.0",
+]
+data = [
+  "datasets>=2.19",
+]
 
 [project.scripts]
 llmeval = "llmeval.cli:app"

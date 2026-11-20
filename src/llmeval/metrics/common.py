@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from llmeval.backends.base import BackendError, LLMBackend
 from llmeval.config import MetricSpec, ScoringConfig
-from llmeval.embeddings import HashingEmbedder
+from llmeval.embeddings import EntailmentModel, TextEmbedder
 from llmeval.models import MetricResult, RagExample
 from llmeval.prompts import JudgeParseError, judge_prompt, parse_judge_output
 from llmeval.scoring import combine_scores, round4, scrub
@@ -26,33 +26,43 @@ def claim_units(text: str) -> list[str]:
     return sentences(text) or ([text] if text.strip() else [])
 
 
-def best_support(claim: str, contexts: list[str], embedder: HashingEmbedder) -> tuple[float, str]:
-    """Best evidence score for one claim, and the passage that produced it.
+def best_support(
+    claim: str,
+    contexts: list[str],
+    embedder: TextEmbedder,
+    nli: EntailmentModel | None = None,
+) -> tuple[float, str, dict[str, float] | None]:
+    """Best evidence score for one claim, the passage, and optional NLI probs.
 
-    The score blends cosine similarity with token F1 so a high trigram-only
-    cosine cannot, on its own, mark an unrelated sentence as supported.
-    A negation mismatch caps the score: "does not store" is not support for
-    "stores", even when the other words match. Polarity is judged against the
-    matched sentence, not the whole context, so a "not" in a different passage
-    does not poison a supported claim.
+    With an NLI model, every context sentence is scored and the highest
+    entailment probability wins. Without one, the score blends cosine and
+    token F1, and a negation mismatch caps it at 0.2. That second path is the
+    offline baseline used by tests.
     """
     if not claim.strip() or not contexts:
-        return 0.0, ""
+        return 0.0, "", None
+    units: list[str] = []
+    for context in contexts:
+        pieces = sentences(context) or [context]
+        if context not in pieces:
+            pieces.append(context)
+        units.extend(pieces)
+    if nli is not None:
+        scored = nli.score_many([(unit, claim) for unit in units])
+        best_index = max(range(len(scored)), key=lambda index: scored[index]["entailment"])
+        chosen = scored[best_index]
+        return chosen["entailment"], units[best_index], chosen
     best = 0.0
     best_unit = ""
-    for context in contexts:
-        units = sentences(context) or [context]
-        if context not in units:
-            units.append(context)
-        for unit in units:
-            lexical = token_f1(claim, unit)
-            blended = 0.5 * embedder.cosine(claim, unit) + 0.5 * lexical
-            if blended >= 0.35 and polarity_conflict(claim, unit):
-                blended = min(blended, 0.2)
-            if blended > best:
-                best = blended
-                best_unit = unit
-    return best, best_unit
+    for unit in units:
+        lexical = token_f1(claim, unit)
+        blended = 0.5 * embedder.cosine(claim, unit) + 0.5 * lexical
+        if blended >= 0.35 and polarity_conflict(claim, unit):
+            blended = min(blended, 0.2)
+        if blended > best:
+            best = blended
+            best_unit = unit
+    return best, best_unit, None
 
 
 def call_judge(

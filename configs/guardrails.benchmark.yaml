@@ -1,0 +1,27 @@
+# Guardrails for the open-domain HaluEval slice.
+# Off-topic is a product policy for the RAG demo, not a property of this benchmark,
+# so it is off here. Injection, PII, and toxicity still run.
+
+embedder:
+  type: hash
+  dim: 256
+
+input:
+  prompt_injection:
+    enabled: true
+    action: block
+  pii:
+    enabled: true
+    action: redact
+
+output:
+  prompt_injection:
+    enabled: true
+    action: block
+  toxicity:
+    enabled: true
+    action: block
+  off_topic:
+    enabled: false
+  schema:
+    enabled: false

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 
 from pydantic import ValidationError
@@ -18,17 +19,19 @@ from llmeval.config import (
     load_guardrails_config,
     load_redteam_config,
 )
-from llmeval.embeddings import HashingEmbedder
+from llmeval.embeddings import build_embedder
 from llmeval.guardrails import GuardrailEngine
 from llmeval.metrics import build_metrics
 from llmeval.models import (
     AggregateResult,
     EvaluationReport,
     ExampleReport,
+    GroupResult,
     GuardReport,
     RagExample,
     RedTeamReport,
 )
+from llmeval.neural import build_nli
 from llmeval.redteam import run_cases
 from llmeval.report import (
     dump_json,
@@ -38,6 +41,8 @@ from llmeval.report import (
     render_redteam_markdown,
 )
 from llmeval.scoring import round4, scoring_label
+
+logger = logging.getLogger(__name__)
 
 
 def display_path(path: Path) -> str:
@@ -73,29 +78,38 @@ def evaluate_examples(
     dataset_label: str,
 ) -> EvaluationReport:
     backend = build_backend(config.backend)
-    embedder = HashingEmbedder(config.embedder.dim)
-    metrics = build_metrics(config, embedder, backend)
+    embedder = build_embedder(config.embedder)
+    nli = build_nli(config.nli)
+    metrics = build_metrics(config, embedder, backend, nli)
     engine: GuardrailEngine | None = None
     if config.guardrails:
         engine = GuardrailEngine(load_guardrails_config(Path(config.guardrails)), embedder)
     example_reports: list[ExampleReport] = []
-    for example in examples:
+    for index, example in enumerate(examples, start=1):
+        if index == 1 or index % 25 == 0 or index == len(examples):
+            logger.info("scoring %s/%s %s", index, len(examples), example.id)
         example_reports.append(
             ExampleReport(
                 id=example.id,
                 question=example.question,
+                label=example.label,
                 metrics=[metric.compute(example) for metric in metrics],
                 input_guard=engine.run(example.question, "input") if engine else None,
                 output_guard=engine.run(example.answer, "output") if engine else None,
             )
         )
+    info = config.dataset_info.model_dump() if config.dataset_info else None
     return EvaluationReport(
         version=__version__,
         backend=backend.name,
+        baseline_model=embedder.name,
+        nli_model=None if nli is None else nli.name,
         dataset=dataset_label,
+        dataset_info=info,
         scoring=scoring_label(config.scoring),
         example_count=len(example_reports),
         aggregates=_aggregates(example_reports),
+        groups=_groups(example_reports),
         examples=example_reports,
     )
 
@@ -193,3 +207,20 @@ def _aggregates(examples: list[ExampleReport]) -> list[AggregateResult]:
             )
         )
     return aggregates
+
+
+def _groups(examples: list[ExampleReport]) -> list[GroupResult]:
+    labels = [example.label for example in examples if example.label]
+    if not labels:
+        return []
+    groups: list[GroupResult] = []
+    for label in sorted(set(labels)):
+        subset = [example for example in examples if example.label == label]
+        groups.append(
+            GroupResult(
+                label=label,
+                example_count=len(subset),
+                aggregates=_aggregates(subset),
+            )
+        )
+    return groups

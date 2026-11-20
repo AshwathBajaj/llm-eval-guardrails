@@ -44,7 +44,29 @@ class BackendConfig(BaseModel):
 class EmbedderConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
+    type: Literal["hash", "sentence-transformers"] = "hash"
     dim: int = 256
+    model: str = "sentence-transformers/all-MiniLM-L6-v2"
+    cache_dir: str | None = None
+    device: str = "cpu"
+
+
+class NLIConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: bool = False
+    model: str = "cross-encoder/nli-MiniLM2-L6-H768"
+    cache_dir: str | None = None
+    device: str = "cpu"
+
+
+class DatasetInfo(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: str
+    source: str
+    license: str
+    slice: str
 
 
 class ScoringConfig(BaseModel):
@@ -77,6 +99,8 @@ class EvalConfig(BaseModel):
     backend: BackendConfig = Field(default_factory=BackendConfig)
     dataset: str | None = None
     embedder: EmbedderConfig = Field(default_factory=EmbedderConfig)
+    nli: NLIConfig = Field(default_factory=NLIConfig)
+    dataset_info: DatasetInfo | None = None
     scoring: ScoringConfig = Field(default_factory=ScoringConfig)
     metrics: dict[str, MetricSpec] = Field(default_factory=dict)
     guardrails: str | None = None
@@ -158,6 +182,7 @@ class RedTeamCase(BaseModel):
     text: str
     expect: Action
     json_schema: dict[str, Any] | None = None
+    source: str = "curated"
 
 
 class RedTeamFile(BaseModel):

@@ -13,6 +13,7 @@ class RagExample(BaseModel):
     contexts: list[str]
     answer: str
     ground_truth: str | None = None
+    label: str | None = None
 
 
 class MetricResult(BaseModel):
@@ -47,6 +48,7 @@ class GuardReport(BaseModel):
 class ExampleReport(BaseModel):
     id: str
     question: str
+    label: str | None = None
     metrics: list[MetricResult]
     input_guard: GuardReport | None = None
     output_guard: GuardReport | None = None
@@ -61,20 +63,39 @@ class AggregateResult(BaseModel):
     threshold: float
 
 
+class GroupResult(BaseModel):
+    label: str
+    example_count: int
+    aggregates: list[AggregateResult]
+
+
 class EvaluationReport(BaseModel):
     project: str = "llmeval"
     version: str
     backend: str
+    baseline_model: str = "hashing"
+    nli_model: str | None = None
     dataset: str
+    dataset_info: dict[str, Any] | None = None
     scoring: str
     example_count: int
     aggregates: list[AggregateResult]
+    groups: list[GroupResult] = Field(default_factory=list)
     examples: list[ExampleReport]
+
+
+class SourceSummary(BaseModel):
+    source: str
+    total: int
+    passed: int
+    failed: int
+    pass_rate: float
 
 
 class RedTeamCaseResult(BaseModel):
     id: str
     category: str
+    source: str = "curated"
     stage: str
     expect: str
     decision: str
@@ -100,4 +121,5 @@ class RedTeamReport(BaseModel):
     failed: int
     pass_rate: float
     by_category: list[CategorySummary]
+    by_source: list[SourceSummary] = Field(default_factory=list)
     cases: list[RedTeamCaseResult]

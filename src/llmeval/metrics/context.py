@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from llmeval.backends.base import LLMBackend
 from llmeval.config import MetricSpec, ScoringConfig
-from llmeval.embeddings import HashingEmbedder
+from llmeval.embeddings import EntailmentModel, TextEmbedder
 from llmeval.metrics.common import (
     best_support,
     call_judge,
@@ -31,15 +31,17 @@ class ContextPrecisionMetric:
 
     def __init__(
         self,
-        embedder: HashingEmbedder,
+        embedder: TextEmbedder,
         backend: LLMBackend,
         spec: MetricSpec,
         scoring: ScoringConfig,
+        nli: EntailmentModel | None = None,
     ) -> None:
         self.embedder = embedder
         self.backend = backend
         self.spec = spec
         self.scoring = scoring
+        self.nli = nli
 
     def compute(self, example: RagExample) -> MetricResult:
         rows: list[dict[str, object]] = []
@@ -84,15 +86,17 @@ class ContextRecallMetric:
 
     def __init__(
         self,
-        embedder: HashingEmbedder,
+        embedder: TextEmbedder,
         backend: LLMBackend,
         spec: MetricSpec,
         scoring: ScoringConfig,
+        nli: EntailmentModel | None = None,
     ) -> None:
         self.embedder = embedder
         self.backend = backend
         self.spec = spec
         self.scoring = scoring
+        self.nli = nli
 
     def compute(self, example: RagExample) -> MetricResult:
         note = None
@@ -103,7 +107,9 @@ class ContextRecallMetric:
         else:
             statements = claim_units(example.ground_truth)
             for statement in statements:
-                support, _evidence = best_support(statement, example.contexts, self.embedder)
+                support, _evidence, _probs = best_support(
+                    statement, example.contexts, self.embedder, self.nli
+                )
                 rows.append(
                     {
                         "statement": statement,

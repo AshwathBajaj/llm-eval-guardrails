@@ -25,20 +25,40 @@ def render_eval_markdown(report: EvaluationReport) -> str:
     lines = [
         "# llmeval report",
         "",
-        f"- Backend: `{report.backend}`",
+        f"- Judge: `{report.backend}`",
+        f"- Baseline: `{report.baseline_model}`",
+        f"- NLI: `{report.nli_model or 'none'}`",
         f"- Dataset: `{report.dataset}`",
         f"- Scoring: `{report.scoring}`",
         f"- Examples: {report.example_count}",
         "",
-        "Pass/fail uses the blended score unless the config says otherwise.",
-        "Hallucination passes when the score is at or below its threshold.",
-        "Every other metric passes when the score is at or above its threshold.",
-        "",
-        "## Aggregates",
-        "",
-        "| Metric | Mean | Threshold | Passed | Direction |",
-        "| --- | ---: | ---: | ---: | --- |",
     ]
+    if report.dataset_info:
+        info = report.dataset_info
+        lines.extend(
+            [
+                f"- Dataset name: {info.get('name', '')}",
+                f"- Source: {info.get('source', '')}",
+                f"- License: {info.get('license', '')}",
+                f"- Slice: {info.get('slice', '')}",
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "The headline value follows the scoring setting.",
+            "When scoring is baseline, that value is the local model.",
+            "The judge column is separate.",
+            "The mock judge is a lexical scorer, not a neural LLM.",
+            "Hallucination passes when the score is at or below its threshold.",
+            "Every other metric passes when the score is at or above its threshold.",
+            "",
+            "## Aggregates",
+            "",
+            "| Metric | Mean | Threshold | Passed | Direction |",
+            "| --- | ---: | ---: | ---: | --- |",
+        ]
+    )
     for aggregate in report.aggregates:
         direction = "higher is better" if aggregate.higher_is_better else "lower is better"
         total = aggregate.passed + aggregate.failed
@@ -46,6 +66,15 @@ def render_eval_markdown(report: EvaluationReport) -> str:
             f"| {_cell(aggregate.name)} | {aggregate.mean:.4f} | {aggregate.threshold:.4f} "
             f"| {aggregate.passed}/{total} | {direction} |"
         )
+    for group in report.groups:
+        lines.extend(["", f"## {group.label} ({group.example_count})", ""])
+        lines.append("| Metric | Mean | Passed |")
+        lines.append("| --- | ---: | ---: |")
+        for aggregate in group.aggregates:
+            total = aggregate.passed + aggregate.failed
+            lines.append(
+                f"| {_cell(aggregate.name)} | {aggregate.mean:.4f} | {aggregate.passed}/{total} |"
+            )
     for example in report.examples:
         lines.extend(["", f"## {example.id}", "", _cell(example.question), ""])
         lines.append("| Metric | Value | Baseline | Judge | Passed |")
@@ -80,11 +109,24 @@ def render_redteam_markdown(report: RedTeamReport) -> str:
         "A case passes when the guardrail decision matches the expected decision.",
         "Benign cases are expected to be allowed, so blocking everything does not score 100%.",
         "",
-        "## By category",
+        "## By source",
         "",
-        "| Category | Passed | Pass rate |",
+        "| Source | Passed | Pass rate |",
         "| --- | ---: | ---: |",
     ]
+    for source in report.by_source:
+        lines.append(
+            f"| {_cell(source.source)} | {source.passed}/{source.total} | {source.pass_rate:.4f} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## By category",
+            "",
+            "| Category | Passed | Pass rate |",
+            "| --- | ---: | ---: |",
+        ]
+    )
     for category in report.by_category:
         lines.append(
             f"| {_cell(category.category)} | {category.passed}/{category.total} "

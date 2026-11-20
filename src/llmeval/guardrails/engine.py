@@ -11,7 +11,7 @@ from __future__ import annotations
 from typing import Any
 
 from llmeval.config import GuardrailsConfig
-from llmeval.embeddings import HashingEmbedder
+from llmeval.embeddings import TextEmbedder, build_embedder
 from llmeval.guardrails.injection import PromptInjectionCheck
 from llmeval.guardrails.pii import PIICheck
 from llmeval.guardrails.schema import SchemaCheck
@@ -24,9 +24,9 @@ _RANK = {"allow": 0, "flag": 1, "redact": 2, "block": 3}
 
 
 class GuardrailEngine:
-    def __init__(self, config: GuardrailsConfig, embedder: HashingEmbedder | None = None) -> None:
+    def __init__(self, config: GuardrailsConfig, embedder: TextEmbedder | None = None) -> None:
         self.config = config
-        self.embedder = embedder or HashingEmbedder(config.embedder.dim)
+        self.embedder = embedder if embedder is not None else build_embedder(config.embedder)
         self._injection = PromptInjectionCheck()
         self._pii = PIICheck()
         self._toxicity = ToxicityCheck()

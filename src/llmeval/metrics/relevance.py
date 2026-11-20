@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from llmeval.backends.base import LLMBackend
 from llmeval.config import MetricSpec, ScoringConfig
-from llmeval.embeddings import HashingEmbedder
+from llmeval.embeddings import EntailmentModel, TextEmbedder
 from llmeval.metrics.common import call_judge, example_sections, finish_metric
 from llmeval.models import MetricResult, RagExample
 from llmeval.scoring import round4
@@ -29,11 +29,13 @@ class AnswerRelevanceMetric:
 
     def __init__(
         self,
-        embedder: HashingEmbedder,
+        embedder: TextEmbedder,
         backend: LLMBackend,
         spec: MetricSpec,
         scoring: ScoringConfig,
+        nli: EntailmentModel | None = None,
     ) -> None:
+        del nli
         self.embedder = embedder
         self.backend = backend
         self.spec = spec
@@ -53,7 +55,7 @@ class AnswerRelevanceMetric:
                 coverage = 0.0
             cosine = self.embedder.cosine(example.question, example.answer)
             lexical = token_f1(example.question, example.answer)
-        baseline = max(coverage, cosine)
+        baseline = cosine if self.embedder.semantic else max(coverage, cosine)
         judge, reason, error = call_judge(
             self.backend, self.name, _RUBRIC, example_sections(example)
         )

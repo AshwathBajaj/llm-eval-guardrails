@@ -18,6 +18,19 @@
   <h1>Red team</h1>
   <p>{{ report.passed }} of {{ report.total }} cases matched the expected decision
     (pass rate {{ "%.4f"|format(report.pass_rate) }}).</p>
+  <h2>By source</h2>
+  <table>
+    <thead><tr><th>Source</th><th class="num">Passed</th><th class="num">Pass rate</th></tr></thead>
+    <tbody>
+      {% for source in report.by_source %}
+      <tr>
+        <td>{{ source.source }}</td>
+        <td class="num">{{ source.passed }}/{{ source.total }}</td>
+        <td class="num">{{ "%.4f"|format(source.pass_rate) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
   <h2>By category</h2>
   <table>
     <thead><tr><th>Category</th><th class="num">Passed</th><th class="num">Pass rate</th></tr></thead>

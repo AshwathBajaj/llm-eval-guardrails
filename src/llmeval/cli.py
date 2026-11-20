@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import Annotated
 
@@ -72,14 +73,19 @@ def main(
 @app.command()
 def run(config: EvalConfigPath) -> None:
     """Score a JSONL dataset and write JSON, Markdown, and HTML reports."""
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
     try:
         report, written = run_evaluation(config)
     except (FileNotFoundError, ValueError, ValidationError) as exc:
         _fail(exc)
         return
+    nli = report.nli_model or "none"
     typer.echo(
-        f"llmeval {report.version}  backend={report.backend}  examples={report.example_count}"
+        f"llmeval {report.version}  judge={report.backend}  "
+        f"baseline={report.baseline_model}  nli={nli}  examples={report.example_count}"
     )
+    for group in report.groups:
+        typer.echo(f"  {group.label}: {group.example_count}")
     typer.echo(f"{'metric':<22}{'mean':>10}{'passed':>12}")
     for aggregate in report.aggregates:
         total = aggregate.passed + aggregate.failed

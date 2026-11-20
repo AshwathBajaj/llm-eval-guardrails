@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from llmeval.backends.base import LLMBackend
 from llmeval.config import MetricSpec, ScoringConfig
-from llmeval.embeddings import HashingEmbedder
+from llmeval.embeddings import EntailmentModel, TextEmbedder
 from llmeval.metrics.common import (
     best_support,
     call_judge,
@@ -42,26 +42,34 @@ class HallucinationMetric:
 
     def __init__(
         self,
-        embedder: HashingEmbedder,
+        embedder: TextEmbedder,
         backend: LLMBackend,
         spec: MetricSpec,
         scoring: ScoringConfig,
+        nli: EntailmentModel | None = None,
     ) -> None:
         self.embedder = embedder
         self.backend = backend
         self.spec = spec
         self.scoring = scoring
+        self.nli = nli
 
     def compute(self, example: RagExample) -> MetricResult:
         claims = claim_units(example.answer)
         rows: list[dict[str, object]] = []
         risks: list[float] = []
         for claim in claims:
-            support, evidence = best_support(claim, example.contexts, self.embedder)
-            label = _nli_label(claim, support, evidence, self.spec.support_threshold)
-            risk = 1.0 - support
-            if label == "contradiction":
-                risk = max(risk, 0.85)
+            support, evidence, probs = best_support(
+                claim, example.contexts, self.embedder, self.nli
+            )
+            if probs is None:
+                label = _nli_label(claim, support, evidence, self.spec.support_threshold)
+                risk = 1.0 - support
+                if label == "contradiction":
+                    risk = max(risk, 0.85)
+            else:
+                label = max(probs, key=probs.get)
+                risk = 1.0 - probs["entailment"]
             risks.append(risk)
             rows.append(
                 {

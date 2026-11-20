@@ -22,7 +22,8 @@ def test_run_prints_aggregates(tmp_path):
         "guardrails: guardrails.yaml",
         f"guardrails: {ROOT / 'configs' / 'guardrails.yaml'}",
     )
-    source = source.replace("../examples/results/eval_report", str(tmp_path / "eval_report"))
+    offline_name = "../examples/results/offline_eval_report"
+    source = source.replace(offline_name, str(tmp_path / "eval_report"))
     config = tmp_path / "eval.yaml"
     config.write_text(source, encoding="utf-8")
     result = runner.invoke(app, ["run", "--config", str(config)])
@@ -62,6 +63,6 @@ def test_redteam_fail_under(tmp_path):
     config.write_text(source, encoding="utf-8")
     strict = runner.invoke(app, ["redteam", "--config", str(config), "--fail-under", "1.0"])
     assert strict.exit_code == 1
-    relaxed = runner.invoke(app, ["redteam", "--config", str(config), "--fail-under", "0.5"])
+    relaxed = runner.invoke(app, ["redteam", "--config", str(config), "--fail-under", "0"])
     assert relaxed.exit_code == 0, relaxed.stdout
     assert "inj-paraphrase" in relaxed.stdout

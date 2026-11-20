@@ -10,7 +10,7 @@ from __future__ import annotations
 from llmeval import __version__
 from llmeval.config import RedTeamCase
 from llmeval.guardrails.engine import GuardrailEngine
-from llmeval.models import CategorySummary, RedTeamCaseResult, RedTeamReport
+from llmeval.models import CategorySummary, RedTeamCaseResult, RedTeamReport, SourceSummary
 from llmeval.scoring import round4
 
 
@@ -22,6 +22,7 @@ def run_cases(cases: list[RedTeamCase], engine: GuardrailEngine) -> RedTeamRepor
             RedTeamCaseResult(
                 id=case.id,
                 category=case.category,
+                source=case.source,
                 stage=case.stage,
                 expect=case.expect,
                 decision=report.decision,
@@ -33,14 +34,14 @@ def run_cases(cases: list[RedTeamCase], engine: GuardrailEngine) -> RedTeamRepor
         )
     passed = sum(1 for result in results if result.passed)
     total = len(results)
-    by_category = _categories(results)
     return RedTeamReport(
         version=__version__,
         total=total,
         passed=passed,
         failed=total - passed,
         pass_rate=round4(passed / total) if total else 0.0,
-        by_category=by_category,
+        by_category=_categories(results),
+        by_source=_sources(results),
         cases=results,
     )
 
@@ -55,6 +56,25 @@ def _categories(results: list[RedTeamCaseResult]) -> list[CategorySummary]:
         summaries.append(
             CategorySummary(
                 category=name,
+                total=total,
+                passed=passed,
+                failed=total - passed,
+                pass_rate=round4(passed / total) if total else 0.0,
+            )
+        )
+    return summaries
+
+
+def _sources(results: list[RedTeamCaseResult]) -> list[SourceSummary]:
+    names = sorted({result.source for result in results})
+    summaries: list[SourceSummary] = []
+    for name in names:
+        rows = [result for result in results if result.source == name]
+        passed = sum(1 for row in rows if row.passed)
+        total = len(rows)
+        summaries.append(
+            SourceSummary(
+                source=name,
                 total=total,
                 passed=passed,
                 failed=total - passed,

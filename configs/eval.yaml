@@ -1,4 +1,5 @@
-# Score the sample RAG set with the offline judge.
+# Offline path: hashing embedder, mock judge, tiny HaluEval slice.
+# The benchmark numbers in the README come from eval.benchmark.yaml.
 # Paths are relative to this file.
 
 backend:
@@ -7,7 +8,14 @@ backend:
 
 dataset: ../data/sample_rag.jsonl
 
+dataset_info:
+  name: HaluEval QA tiny slice
+  source: https://huggingface.co/datasets/pminervini/HaluEval
+  license: Apache-2.0
+  slice: first 4 rows of the qa split, right answer and hallucinated answer
+
 embedder:
+  type: hash
   dim: 256
 
 scoring:
@@ -33,6 +41,6 @@ metrics:
 guardrails: guardrails.yaml
 
 output:
-  json_path: ../examples/results/eval_report.json
-  markdown_path: ../examples/results/eval_report.md
-  html_path: ../examples/results/eval_report.html
+  json_path: ../examples/results/offline_eval_report.json
+  markdown_path: ../examples/results/offline_eval_report.md
+  html_path: ../examples/results/offline_eval_report.html
