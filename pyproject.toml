@@ -8,7 +8,6 @@ requires-python = ">=3.11"
 authors = [{ name = "Ashwath Bajaj" }]
 keywords = ["llm", "rag", "evaluation", "guardrails", "hallucination"]
 classifiers = [
-  "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
@@ -47,7 +46,7 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.package-data]
-llmeval = ["demo/*.html", "py.typed"]
+llmeval = ["demo/*.html", "report/*.html", "py.typed"]
 
 [tool.ruff]
 line-length = 100
