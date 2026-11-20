@@ -1,0 +1,80 @@
+# Policy for the demo and the red-team suite.
+# Actions: allow, flag, redact, block. The strictest triggered action wins.
+
+embedder:
+  dim: 256
+
+input:
+  prompt_injection:
+    enabled: true
+    action: block
+  pii:
+    enabled: true
+    action: redact
+
+output:
+  prompt_injection:
+    enabled: true
+    action: block
+  toxicity:
+    enabled: true
+    action: block
+  off_topic:
+    enabled: true
+    action: block
+    min_hits: 1
+    similarity_threshold: 0.40
+    allowed_topics:
+      - "retrieval augmented generation retriever generator documents passages language model grounded answers"
+      - "embeddings cosine similarity vector index nearest neighbor search faithfulness relevance precision recall"
+      - "evaluation metrics hallucination guardrails prompts context question ground truth"
+    in_domain_terms:
+      - retrieval
+      - retriev
+      - generator
+      - generat
+      - embedding
+      - embed
+      - vector
+      - context
+      - faithful
+      - model
+      - prompt
+      - document
+      - passage
+      - answer
+      - metric
+      - rag
+      - llm
+      - guard
+      - similar
+      - hallucin
+      - precision
+      - precis
+      - recall
+      - token
+      - source
+      - neural
+      - train
+      - attention
+      - transformer
+      - judge
+      - baseline
+      - cosine
+      - question
+      - ground
+      - index
+      - neighbor
+      - language
+      - citation
+      - grounded
+  schema:
+    enabled: false
+    action: block
+    json_schema:
+      type: object
+      additionalProperties: false
+      required: [answer]
+      properties:
+        answer:
+          type: string

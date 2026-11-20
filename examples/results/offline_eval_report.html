@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>llmeval report</title>
+  <style>
+    body { margin: 2rem auto; max-width: 920px; padding: 0 1rem;
+      background: #f7f3eb; color: #1c1915;
+      font-family: Georgia, "Iowan Old Style", serif; }
+    h1 { font-weight: 500; letter-spacing: -0.02em; }
+    table { width: 100%; border-collapse: collapse; margin: 0.5rem 0 1.5rem; }
+    th, td { border-bottom: 1px solid #e4d8c4; padding: 0.35rem 0.4rem; text-align: left; }
+    .num { text-align: right; font-family: ui-monospace, monospace; font-size: 0.92rem; }
+    .pass { color: #3f6212; }
+    .fail { color: #9a3412; }
+    .meta { color: #6b6256; }
+  </style>
+</head>
+<body>
+  <p class="meta">llmeval 0.1.0 · judge mock:mock-judge-v1 · baseline hashing-256
+     · blend(judge=0.50)</p>
+  <h1>Evaluation report</h1>
+  <p>8 examples from data/sample_rag.jsonl.</p>
+  
+  <p>HaluEval QA tiny slice. License: Apache-2.0.
+    first 4 rows of the qa split, right answer and hallucinated answer</p>
+  
+  <h2>Aggregates</h2>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th class="num">Mean</th><th class="num">Threshold</th><th>Passed</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">0.3992</td>
+        <td class="num">0.6000</td>
+        <td>0/8</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.3645</td>
+        <td class="num">0.3500</td>
+        <td>5/8</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">0.8750</td>
+        <td class="num">0.5000</td>
+        <td>8/8</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.5000</td>
+        <td>8/8</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">0.4299</td>
+        <td class="num">0.4500</td>
+        <td>7/8</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  
+  <h2>hallucinated (4)</h2>
+  <table>
+    <thead><tr><th>Metric</th><th class="num">Mean</th><th>Passed</th></tr></thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">0.2985</td>
+        <td>0/4</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.5735</td>
+        <td>4/4</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">0.8750</td>
+        <td>4/4</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">0.5000</td>
+        <td>4/4</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">0.4795</td>
+        <td>3/4</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  
+  <h2>right (4)</h2>
+  <table>
+    <thead><tr><th>Metric</th><th class="num">Mean</th><th>Passed</th></tr></thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">0.5000</td>
+        <td>0/4</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.1556</td>
+        <td>1/4</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">0.8750</td>
+        <td>4/4</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">0.5000</td>
+        <td>4/4</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">0.3803</td>
+        <td>4/4</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  
+  
+  <h2>halueval-qa-0000-right</h2>
+  <p>Which magazine was started first Arthur&#39;s Magazine or First for Women?</p>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th class="num">Value</th><th class="num">Baseline</th><th class="num">Judge</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.0000</td>
+        <td class="num">1.0000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.5280</td>
+        <td class="num">0.6559</td>
+        <td class="num">0.4000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">0.3413</td>
+        <td class="num">0.6827</td>
+        <td class="num">0.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <p>Input guard: allow.</p>
+  <p>Output guard: block.</p>
+  
+  <h2>halueval-qa-0000-hallucinated</h2>
+  <p>Which magazine was started first Arthur&#39;s Magazine or First for Women?</p>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th class="num">Value</th><th class="num">Baseline</th><th class="num">Judge</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">0.3333</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.6667</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.6405</td>
+        <td class="num">0.6810</td>
+        <td class="num">0.6000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">0.3891</td>
+        <td class="num">0.7782</td>
+        <td class="num">0.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <p>Input guard: allow.</p>
+  <p>Output guard: block.</p>
+  
+  <h2>halueval-qa-0001-right</h2>
+  <p>The Oberoi family is part of a hotel company that has a head office in what city?</p>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th class="num">Value</th><th class="num">Baseline</th><th class="num">Judge</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.0000</td>
+        <td class="num">1.0000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.0000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">0.4295</td>
+        <td class="num">0.8589</td>
+        <td class="num">0.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <p>Input guard: allow.</p>
+  <p>Output guard: block.</p>
+  
+  <h2>halueval-qa-0001-hallucinated</h2>
+  <p>The Oberoi family is part of a hotel company that has a head office in what city?</p>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th class="num">Value</th><th class="num">Baseline</th><th class="num">Judge</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">0.3333</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.6667</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.4096</td>
+        <td class="num">0.4556</td>
+        <td class="num">0.3636</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">0.2692</td>
+        <td class="num">0.5383</td>
+        <td class="num">0.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <p>Input guard: allow.</p>
+  <p>Output guard: block.</p>
+  
+  <h2>halueval-qa-0002-right</h2>
+  <p>Musician and satirist Allie Goertz wrote a song about the &#34;The Simpsons&#34; character Milhouse, who Matt Groening named after who?</p>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th class="num">Value</th><th class="num">Baseline</th><th class="num">Judge</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.0000</td>
+        <td class="num">1.0000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.0000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">0.3891</td>
+        <td class="num">0.7782</td>
+        <td class="num">0.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <p>Input guard: allow.</p>
+  <p>Output guard: block.</p>
+  
+  <h2>halueval-qa-0002-hallucinated</h2>
+  <p>Musician and satirist Allie Goertz wrote a song about the &#34;The Simpsons&#34; character Milhouse, who Matt Groening named after who?</p>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th class="num">Value</th><th class="num">Baseline</th><th class="num">Judge</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">0.2273</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.4545</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.5104</td>
+        <td class="num">0.5833</td>
+        <td class="num">0.4375</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">0.8531</td>
+        <td class="num">0.7061</td>
+        <td class="num">1.0000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <p>Input guard: allow.</p>
+  <p>Output guard: block.</p>
+  
+  <h2>halueval-qa-0003-right</h2>
+  <p>What nationality was James Henry Miller&#39;s wife?</p>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th class="num">Value</th><th class="num">Baseline</th><th class="num">Judge</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.0000</td>
+        <td class="num">1.0000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.0942</td>
+        <td class="num">0.1884</td>
+        <td class="num">0.0000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">0.3612</td>
+        <td class="num">0.7224</td>
+        <td class="num">0.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <p>Input guard: allow.</p>
+  <p>Output guard: block.</p>
+  
+  <h2>halueval-qa-0003-hallucinated</h2>
+  <p>What nationality was James Henry Miller&#39;s wife?</p>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th class="num">Value</th><th class="num">Baseline</th><th class="num">Judge</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">0.3000</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.6000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.7333</td>
+        <td class="num">0.8000</td>
+        <td class="num">0.6667</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">0.4067</td>
+        <td class="num">0.8135</td>
+        <td class="num">0.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <p>Input guard: allow.</p>
+  <p>Output guard: block.</p>
+  
+</body>
+</html>

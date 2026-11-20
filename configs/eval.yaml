@@ -1,0 +1,46 @@
+# Offline path: hashing embedder, mock judge, tiny HaluEval slice.
+# The benchmark numbers in the README come from eval.benchmark.yaml.
+# Paths are relative to this file.
+
+backend:
+  type: mock
+  model: mock-judge-v1
+
+dataset: ../data/sample_rag.jsonl
+
+dataset_info:
+  name: HaluEval QA tiny slice
+  source: https://huggingface.co/datasets/pminervini/HaluEval
+  license: Apache-2.0
+  slice: first 4 rows of the qa split, right answer and hallucinated answer
+
+embedder:
+  type: hash
+  dim: 256
+
+scoring:
+  decision: blend
+  blend_judge_weight: 0.5
+
+metrics:
+  faithfulness:
+    threshold: 0.60
+    support_threshold: 0.55
+  answer_relevance:
+    threshold: 0.35
+  context_precision:
+    threshold: 0.50
+    relevance_threshold: 0.18
+  context_recall:
+    threshold: 0.50
+    support_threshold: 0.55
+  hallucination:
+    threshold: 0.45
+    support_threshold: 0.55
+
+guardrails: guardrails.yaml
+
+output:
+  json_path: ../examples/results/offline_eval_report.json
+  markdown_path: ../examples/results/offline_eval_report.md
+  html_path: ../examples/results/offline_eval_report.html

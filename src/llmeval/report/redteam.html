@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>llmeval red team</title>
+  <style>
+    body { margin: 2rem auto; max-width: 920px; padding: 0 1rem;
+      background: #f7f3eb; color: #1c1915;
+      font-family: Georgia, "Iowan Old Style", serif; }
+    table { width: 100%; border-collapse: collapse; margin: 0.5rem 0 1.5rem; }
+    th, td { border-bottom: 1px solid #e4d8c4; padding: 0.35rem 0.4rem; text-align: left; }
+    .num { text-align: right; font-family: ui-monospace, monospace; }
+    .pass { color: #3f6212; }
+    .fail { color: #9a3412; }
+  </style>
+</head>
+<body>
+  <h1>Red team</h1>
+  <p>{{ report.passed }} of {{ report.total }} cases matched the expected decision
+    (pass rate {{ "%.4f"|format(report.pass_rate) }}).</p>
+  <h2>By source</h2>
+  <table>
+    <thead><tr><th>Source</th><th class="num">Passed</th><th class="num">Pass rate</th></tr></thead>
+    <tbody>
+      {% for source in report.by_source %}
+      <tr>
+        <td>{{ source.source }}</td>
+        <td class="num">{{ source.passed }}/{{ source.total }}</td>
+        <td class="num">{{ "%.4f"|format(source.pass_rate) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <h2>By category</h2>
+  <table>
+    <thead><tr><th>Category</th><th class="num">Passed</th><th class="num">Pass rate</th></tr></thead>
+    <tbody>
+      {% for category in report.by_category %}
+      <tr>
+        <td>{{ category.category }}</td>
+        <td class="num">{{ category.passed }}/{{ category.total }}</td>
+        <td class="num">{{ "%.4f"|format(category.pass_rate) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <h2>Cases</h2>
+  <table>
+    <thead><tr><th>Id</th><th>Expect</th><th>Decision</th><th>Result</th></tr></thead>
+    <tbody>
+      {% for case in report.cases %}
+      <tr>
+        <td>{{ case.id }}</td>
+        <td>{{ case.expect }}</td>
+        <td>{{ case.decision }}</td>
+        <td class="{{ 'pass' if case.passed else 'fail' }}">{{ 'pass' if case.passed else 'fail' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>
