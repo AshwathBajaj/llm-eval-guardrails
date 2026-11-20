@@ -1,0 +1,1266 @@
+{
+  "aggregates": [
+    {
+      "failed": 4,
+      "higher_is_better": true,
+      "mean": 0.5,
+      "name": "faithfulness",
+      "passed": 2,
+      "threshold": 0.6
+    },
+    {
+      "failed": 2,
+      "higher_is_better": true,
+      "mean": 0.4224,
+      "name": "answer_relevance",
+      "passed": 4,
+      "threshold": 0.35
+    },
+    {
+      "failed": 2,
+      "higher_is_better": true,
+      "mean": 0.625,
+      "name": "context_precision",
+      "passed": 4,
+      "threshold": 0.5
+    },
+    {
+      "failed": 1,
+      "higher_is_better": true,
+      "mean": 0.8333,
+      "name": "context_recall",
+      "passed": 5,
+      "threshold": 0.5
+    },
+    {
+      "failed": 4,
+      "higher_is_better": false,
+      "mean": 0.482,
+      "name": "hallucination",
+      "passed": 2,
+      "threshold": 0.45
+    }
+  ],
+  "backend": "mock:mock-judge-v1",
+  "dataset": "data/sample_rag.jsonl",
+  "example_count": 6,
+  "examples": [
+    {
+      "id": "grounded-rag",
+      "input_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          },
+          {
+            "action": "redact",
+            "details": {
+              "count": 0,
+              "labels": [],
+              "redacted_text": "What is retrieval-augmented generation?"
+            },
+            "guardrail": "pii",
+            "message": "no pii detected",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          }
+        ],
+        "output_text": "What is retrieval-augmented generation?",
+        "stage": "input",
+        "text": "What is retrieval-augmented generation?"
+      },
+      "metrics": [
+        {
+          "baseline": 1.0,
+          "details": {
+            "claims": [
+              {
+                "claim": "Retrieval-augmented generation fetches relevant documents and passes them to a language model so the answer can cite source text.",
+                "support": 1.0,
+                "supported": true
+              }
+            ],
+            "judge_reason": "Mean lexical coverage across 1 claim(s).",
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "faithfulness",
+          "passed": true,
+          "threshold": 0.6,
+          "value": 1.0
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "cosine": 0.4151,
+            "judge_reason": "Jaccard overlap between question and answer.",
+            "question_coverage": 1.0,
+            "token_f1": 0.375
+          },
+          "higher_is_better": true,
+          "judge": 0.2308,
+          "name": "answer_relevance",
+          "passed": true,
+          "threshold": 0.35,
+          "value": 0.6154
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "contexts": [
+              {
+                "rank": 1,
+                "relevant": true,
+                "similarity": 0.4151
+              },
+              {
+                "rank": 2,
+                "relevant": true,
+                "similarity": 0.1833
+              }
+            ],
+            "judge_reason": "Lexical context precision, relevant items first.",
+            "relevance_threshold": 0.18
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_precision",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 1.0
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "judge_reason": "1 of 1 ground-truth sentence(s) were covered.",
+            "statements": [
+              {
+                "covered": true,
+                "statement": "Retrieval-augmented generation fetches relevant documents and passes them to a language model so the answer can cite source text.",
+                "support": 1.0
+              }
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_recall",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 1.0
+        },
+        {
+          "baseline": 0.0,
+          "details": {
+            "claims": [
+              {
+                "claim": "Retrieval-augmented generation fetches relevant documents and passes them to a language model so the answer can cite source text.",
+                "label": "entailment",
+                "risk": 0.0,
+                "support": 1.0
+              }
+            ],
+            "judge_reason": "0 of 1 claim(s) had lexical coverage under 0.5.",
+            "labels": {
+              "contradiction": 0,
+              "entailment": 1,
+              "neutral": 0
+            },
+            "novel_word_rate": 0.0,
+            "novel_words": [],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": false,
+          "judge": 0.0,
+          "name": "hallucination",
+          "passed": true,
+          "threshold": 0.45,
+          "value": 0.0
+        }
+      ],
+      "output_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "toxicity",
+            "message": "no toxic language matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "hit_count": 7,
+              "hits": [
+                "answer",
+                "documents",
+                "generation",
+                "language",
+                "model",
+                "retrieval",
+                "source"
+              ],
+              "min_hits": 1,
+              "similarity": 0.5962,
+              "similarity_threshold": 0.4
+            },
+            "guardrail": "off_topic",
+            "message": "text is inside the configured topics",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          }
+        ],
+        "output_text": "Retrieval-augmented generation fetches relevant documents and passes them to a language model so the answer can cite source text.",
+        "stage": "output",
+        "text": "Retrieval-augmented generation fetches relevant documents and passes them to a language model so the answer can cite source text."
+      },
+      "question": "What is retrieval-augmented generation?"
+    },
+    {
+      "id": "mixed-claim",
+      "input_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          },
+          {
+            "action": "redact",
+            "details": {
+              "count": 0,
+              "labels": [],
+              "redacted_text": "When was the transformer architecture introduced?"
+            },
+            "guardrail": "pii",
+            "message": "no pii detected",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          }
+        ],
+        "output_text": "When was the transformer architecture introduced?",
+        "stage": "input",
+        "text": "When was the transformer architecture introduced?"
+      },
+      "metrics": [
+        {
+          "baseline": 0.5,
+          "details": {
+            "claims": [
+              {
+                "claim": "The transformer architecture was introduced in the paper Attention Is All You Need.",
+                "support": 1.0,
+                "supported": true
+              },
+              {
+                "claim": "It was created in 1998 by the Xerox PARC photocopier team.",
+                "support": 0.1371,
+                "supported": false
+              }
+            ],
+            "judge_reason": "Mean lexical coverage across 2 claim(s).",
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 0.5,
+          "name": "faithfulness",
+          "passed": false,
+          "threshold": 0.6,
+          "value": 0.5
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "cosine": 0.6547,
+            "judge_reason": "Jaccard overlap between question and answer.",
+            "question_coverage": 1.0,
+            "token_f1": 0.4
+          },
+          "higher_is_better": true,
+          "judge": 0.25,
+          "name": "answer_relevance",
+          "passed": true,
+          "threshold": 0.35,
+          "value": 0.625
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "contexts": [
+              {
+                "rank": 1,
+                "relevant": true,
+                "similarity": 0.7706
+              }
+            ],
+            "judge_reason": "Lexical context precision, relevant items first.",
+            "relevance_threshold": 0.18
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_precision",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 1.0
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "judge_reason": "1 of 1 ground-truth sentence(s) were covered.",
+            "statements": [
+              {
+                "covered": true,
+                "statement": "The transformer architecture was introduced in the paper Attention Is All You Need.",
+                "support": 1.0
+              }
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_recall",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 1.0
+        },
+        {
+          "baseline": 0.4314,
+          "details": {
+            "claims": [
+              {
+                "claim": "The transformer architecture was introduced in the paper Attention Is All You Need.",
+                "label": "entailment",
+                "risk": 0.0,
+                "support": 1.0
+              },
+              {
+                "claim": "It was created in 1998 by the Xerox PARC photocopier team.",
+                "label": "neutral",
+                "risk": 0.8629,
+                "support": 0.1371
+              }
+            ],
+            "judge_reason": "1 of 2 claim(s) had lexical coverage under 0.5.",
+            "labels": {
+              "contradiction": 0,
+              "entailment": 1,
+              "neutral": 1
+            },
+            "novel_word_rate": 0.5,
+            "novel_words": [
+              "1998",
+              "created",
+              "parc",
+              "photocopier",
+              "team",
+              "xerox"
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": false,
+          "judge": 0.5,
+          "name": "hallucination",
+          "passed": false,
+          "threshold": 0.45,
+          "value": 0.4657
+        }
+      ],
+      "output_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "toxicity",
+            "message": "no toxic language matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "hit_count": 2,
+              "hits": [
+                "attention",
+                "transformer"
+              ],
+              "min_hits": 1,
+              "similarity": 0.2036,
+              "similarity_threshold": 0.4
+            },
+            "guardrail": "off_topic",
+            "message": "text is inside the configured topics",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          }
+        ],
+        "output_text": "The transformer architecture was introduced in the paper Attention Is All You Need. It was created in 1998 by the Xerox PARC photocopier team.",
+        "stage": "output",
+        "text": "The transformer architecture was introduced in the paper Attention Is All You Need. It was created in 1998 by the Xerox PARC photocopier team."
+      },
+      "question": "When was the transformer architecture introduced?"
+    },
+    {
+      "id": "off-topic-answer",
+      "input_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          },
+          {
+            "action": "redact",
+            "details": {
+              "count": 0,
+              "labels": [],
+              "redacted_text": "How does cosine similarity measure the closeness of two embeddings?"
+            },
+            "guardrail": "pii",
+            "message": "no pii detected",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          }
+        ],
+        "output_text": "How does cosine similarity measure the closeness of two embeddings?",
+        "stage": "input",
+        "text": "How does cosine similarity measure the closeness of two embeddings?"
+      },
+      "metrics": [
+        {
+          "baseline": 0.0,
+          "details": {
+            "claims": [
+              {
+                "claim": "Preheat the oven, cream the butter with sugar, and fold in the flour to bake a chocolate cake.",
+                "support": 0.1263,
+                "supported": false
+              }
+            ],
+            "judge_reason": "Mean lexical coverage across 1 claim(s).",
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 0.0,
+          "name": "faithfulness",
+          "passed": false,
+          "threshold": 0.6,
+          "value": 0.0
+        },
+        {
+          "baseline": 0.0829,
+          "details": {
+            "cosine": 0.0829,
+            "judge_reason": "Jaccard overlap between question and answer.",
+            "question_coverage": 0.0,
+            "token_f1": 0.0
+          },
+          "higher_is_better": true,
+          "judge": 0.0,
+          "name": "answer_relevance",
+          "passed": false,
+          "threshold": 0.35,
+          "value": 0.0414
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "contexts": [
+              {
+                "rank": 1,
+                "relevant": true,
+                "similarity": 0.4505
+              }
+            ],
+            "judge_reason": "Lexical context precision, relevant items first.",
+            "relevance_threshold": 0.18
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_precision",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 1.0
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "judge_reason": "1 of 1 ground-truth sentence(s) were covered.",
+            "statements": [
+              {
+                "covered": true,
+                "statement": "Cosine similarity is the cosine of the angle between two vectors.",
+                "support": 0.8207
+              }
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_recall",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 1.0
+        },
+        {
+          "baseline": 0.8737,
+          "details": {
+            "claims": [
+              {
+                "claim": "Preheat the oven, cream the butter with sugar, and fold in the flour to bake a chocolate cake.",
+                "label": "neutral",
+                "risk": 0.8737,
+                "support": 0.1263
+              }
+            ],
+            "judge_reason": "1 of 1 claim(s) had lexical coverage under 0.5.",
+            "labels": {
+              "contradiction": 0,
+              "entailment": 0,
+              "neutral": 1
+            },
+            "novel_word_rate": 1.0,
+            "novel_words": [
+              "bake",
+              "butter",
+              "cake",
+              "chocolate",
+              "cream",
+              "flour",
+              "fold",
+              "oven",
+              "preheat",
+              "sugar"
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": false,
+          "judge": 1.0,
+          "name": "hallucination",
+          "passed": false,
+          "threshold": 0.45,
+          "value": 0.9369
+        }
+      ],
+      "output_guard": {
+        "decision": "block",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "toxicity",
+            "message": "no toxic language matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "hit_count": 0,
+              "hits": [],
+              "min_hits": 1,
+              "similarity": 0.0996,
+              "similarity_threshold": 0.4
+            },
+            "guardrail": "off_topic",
+            "message": "text is outside the configured topics",
+            "severity": "medium",
+            "stage": "output",
+            "triggered": true
+          }
+        ],
+        "output_text": "Preheat the oven, cream the butter with sugar, and fold in the flour to bake a chocolate cake.",
+        "stage": "output",
+        "text": "Preheat the oven, cream the butter with sugar, and fold in the flour to bake a chocolate cake."
+      },
+      "question": "How does cosine similarity measure the closeness of two embeddings?"
+    },
+    {
+      "id": "distractor-first",
+      "input_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          },
+          {
+            "action": "redact",
+            "details": {
+              "count": 0,
+              "labels": [],
+              "redacted_text": "What is a vector index used for?"
+            },
+            "guardrail": "pii",
+            "message": "no pii detected",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          }
+        ],
+        "output_text": "What is a vector index used for?",
+        "stage": "input",
+        "text": "What is a vector index used for?"
+      },
+      "metrics": [
+        {
+          "baseline": 1.0,
+          "details": {
+            "claims": [
+              {
+                "claim": "A vector index stores embeddings so nearest-neighbor search can retrieve related passages quickly.",
+                "support": 1.0,
+                "supported": true
+              }
+            ],
+            "judge_reason": "Mean lexical coverage across 1 claim(s).",
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "faithfulness",
+          "passed": true,
+          "threshold": 0.6,
+          "value": 1.0
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "cosine": 0.253,
+            "judge_reason": "Jaccard overlap between question and answer.",
+            "question_coverage": 1.0,
+            "token_f1": 0.3077
+          },
+          "higher_is_better": true,
+          "judge": 0.1818,
+          "name": "answer_relevance",
+          "passed": true,
+          "threshold": 0.35,
+          "value": 0.5909
+        },
+        {
+          "baseline": 0.5,
+          "details": {
+            "contexts": [
+              {
+                "rank": 1,
+                "relevant": false,
+                "similarity": 0.0694
+              },
+              {
+                "rank": 2,
+                "relevant": true,
+                "similarity": 0.253
+              }
+            ],
+            "judge_reason": "Lexical context precision, relevant items first.",
+            "relevance_threshold": 0.18
+          },
+          "higher_is_better": true,
+          "judge": 0.5,
+          "name": "context_precision",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 0.5
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "judge_reason": "1 of 1 ground-truth sentence(s) were covered.",
+            "statements": [
+              {
+                "covered": true,
+                "statement": "A vector index stores embeddings so nearest-neighbor search can retrieve related passages quickly.",
+                "support": 1.0
+              }
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_recall",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 1.0
+        },
+        {
+          "baseline": 0.0,
+          "details": {
+            "claims": [
+              {
+                "claim": "A vector index stores embeddings so nearest-neighbor search can retrieve related passages quickly.",
+                "label": "entailment",
+                "risk": 0.0,
+                "support": 1.0
+              }
+            ],
+            "judge_reason": "0 of 1 claim(s) had lexical coverage under 0.5.",
+            "labels": {
+              "contradiction": 0,
+              "entailment": 1,
+              "neutral": 0
+            },
+            "novel_word_rate": 0.0,
+            "novel_words": [],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": false,
+          "judge": 0.0,
+          "name": "hallucination",
+          "passed": true,
+          "threshold": 0.45,
+          "value": 0.0
+        }
+      ],
+      "output_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "toxicity",
+            "message": "no toxic language matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "hit_count": 6,
+              "hits": [
+                "embeddings",
+                "index",
+                "neighbor",
+                "passages",
+                "retrieve",
+                "vector"
+              ],
+              "min_hits": 1,
+              "similarity": 0.5,
+              "similarity_threshold": 0.4
+            },
+            "guardrail": "off_topic",
+            "message": "text is inside the configured topics",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          }
+        ],
+        "output_text": "A vector index stores embeddings so nearest-neighbor search can retrieve related passages quickly.",
+        "stage": "output",
+        "text": "A vector index stores embeddings so nearest-neighbor search can retrieve related passages quickly."
+      },
+      "question": "What is a vector index used for?"
+    },
+    {
+      "id": "missing-context",
+      "input_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          },
+          {
+            "action": "redact",
+            "details": {
+              "count": 0,
+              "labels": [],
+              "redacted_text": "What two components make up a retrieval-augmented generation system?"
+            },
+            "guardrail": "pii",
+            "message": "no pii detected",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          }
+        ],
+        "output_text": "What two components make up a retrieval-augmented generation system?",
+        "stage": "input",
+        "text": "What two components make up a retrieval-augmented generation system?"
+      },
+      "metrics": [
+        {
+          "baseline": 0.0,
+          "details": {
+            "claims": [
+              {
+                "claim": "A retrieval-augmented generation system has a retriever and a generator.",
+                "support": 0.0,
+                "supported": false
+              }
+            ],
+            "judge_reason": "Mean lexical coverage across 1 claim(s).",
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 0.0,
+          "name": "faithfulness",
+          "passed": false,
+          "threshold": 0.6,
+          "value": 0.0
+        },
+        {
+          "baseline": 0.6111,
+          "details": {
+            "cosine": 0.6111,
+            "judge_reason": "Jaccard overlap between question and answer.",
+            "question_coverage": 0.5714,
+            "token_f1": 0.5714
+          },
+          "higher_is_better": true,
+          "judge": 0.4,
+          "name": "answer_relevance",
+          "passed": true,
+          "threshold": 0.35,
+          "value": 0.5056
+        },
+        {
+          "baseline": 0.0,
+          "details": {
+            "contexts": [
+              {
+                "rank": 1,
+                "relevant": false,
+                "similarity": -0.0549
+              }
+            ],
+            "judge_reason": "Lexical context precision, relevant items first.",
+            "relevance_threshold": 0.18
+          },
+          "higher_is_better": true,
+          "judge": 0.0,
+          "name": "context_precision",
+          "passed": false,
+          "threshold": 0.5,
+          "value": 0.0
+        },
+        {
+          "baseline": 0.0,
+          "details": {
+            "judge_reason": "0 of 1 ground-truth sentence(s) were covered.",
+            "statements": [
+              {
+                "covered": false,
+                "statement": "A retrieval-augmented generation system has a retriever and a generator.",
+                "support": 0.0
+              }
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 0.0,
+          "name": "context_recall",
+          "passed": false,
+          "threshold": 0.5,
+          "value": 0.0
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "claims": [
+              {
+                "claim": "A retrieval-augmented generation system has a retriever and a generator.",
+                "label": "neutral",
+                "risk": 1.0,
+                "support": 0.0
+              }
+            ],
+            "judge_reason": "1 of 1 claim(s) had lexical coverage under 0.5.",
+            "labels": {
+              "contradiction": 0,
+              "entailment": 0,
+              "neutral": 1
+            },
+            "novel_word_rate": 1.0,
+            "novel_words": [
+              "augmented",
+              "generation",
+              "generator",
+              "has",
+              "retrieval",
+              "retriever",
+              "system"
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": false,
+          "judge": 1.0,
+          "name": "hallucination",
+          "passed": false,
+          "threshold": 0.45,
+          "value": 1.0
+        }
+      ],
+      "output_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "toxicity",
+            "message": "no toxic language matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "hit_count": 4,
+              "hits": [
+                "generation",
+                "generator",
+                "retrieval",
+                "retriever"
+              ],
+              "min_hits": 1,
+              "similarity": 0.6543,
+              "similarity_threshold": 0.4
+            },
+            "guardrail": "off_topic",
+            "message": "text is inside the configured topics",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          }
+        ],
+        "output_text": "A retrieval-augmented generation system has a retriever and a generator.",
+        "stage": "output",
+        "text": "A retrieval-augmented generation system has a retriever and a generator."
+      },
+      "question": "What two components make up a retrieval-augmented generation system?"
+    },
+    {
+      "id": "partial-extra",
+      "input_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          },
+          {
+            "action": "redact",
+            "details": {
+              "count": 0,
+              "labels": [],
+              "redacted_text": "Why do RAG evaluations report faithfulness?"
+            },
+            "guardrail": "pii",
+            "message": "no pii detected",
+            "severity": "none",
+            "stage": "input",
+            "triggered": false
+          }
+        ],
+        "output_text": "Why do RAG evaluations report faithfulness?",
+        "stage": "input",
+        "text": "Why do RAG evaluations report faithfulness?"
+      },
+      "metrics": [
+        {
+          "baseline": 0.5,
+          "details": {
+            "claims": [
+              {
+                "claim": "Faithfulness measures whether the answer stays grounded in the retrieved context.",
+                "support": 1.0,
+                "supported": true
+              },
+              {
+                "claim": "Teams also use it to decide the price of coffee in Lisbon.",
+                "support": 0.0435,
+                "supported": false
+              }
+            ],
+            "judge_reason": "Mean lexical coverage across 2 claim(s).",
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 0.5,
+          "name": "faithfulness",
+          "passed": false,
+          "threshold": 0.6,
+          "value": 0.5
+        },
+        {
+          "baseline": 0.25,
+          "details": {
+            "cosine": 0.1162,
+            "judge_reason": "Jaccard overlap between question and answer.",
+            "question_coverage": 0.25,
+            "token_f1": 0.1176
+          },
+          "higher_is_better": true,
+          "judge": 0.0625,
+          "name": "answer_relevance",
+          "passed": false,
+          "threshold": 0.35,
+          "value": 0.1562
+        },
+        {
+          "baseline": 0.5,
+          "details": {
+            "contexts": [
+              {
+                "rank": 1,
+                "relevant": false,
+                "similarity": 0.1398
+              },
+              {
+                "rank": 2,
+                "relevant": true,
+                "similarity": 0.2479
+              }
+            ],
+            "judge_reason": "Lexical context precision, relevant items first.",
+            "relevance_threshold": 0.18
+          },
+          "higher_is_better": true,
+          "judge": 0.0,
+          "name": "context_precision",
+          "passed": false,
+          "threshold": 0.5,
+          "value": 0.25
+        },
+        {
+          "baseline": 1.0,
+          "details": {
+            "judge_reason": "1 of 1 ground-truth sentence(s) were covered.",
+            "statements": [
+              {
+                "covered": true,
+                "statement": "Faithfulness measures whether the answer stays grounded in the retrieved context.",
+                "support": 1.0
+              }
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": true,
+          "judge": 1.0,
+          "name": "context_recall",
+          "passed": true,
+          "threshold": 0.5,
+          "value": 1.0
+        },
+        {
+          "baseline": 0.4783,
+          "details": {
+            "claims": [
+              {
+                "claim": "Faithfulness measures whether the answer stays grounded in the retrieved context.",
+                "label": "entailment",
+                "risk": 0.0,
+                "support": 1.0
+              },
+              {
+                "claim": "Teams also use it to decide the price of coffee in Lisbon.",
+                "label": "neutral",
+                "risk": 0.9565,
+                "support": 0.0435
+              }
+            ],
+            "judge_reason": "1 of 2 claim(s) had lexical coverage under 0.5.",
+            "labels": {
+              "contradiction": 0,
+              "entailment": 1,
+              "neutral": 1
+            },
+            "novel_word_rate": 0.3846,
+            "novel_words": [
+              "coffee",
+              "decide",
+              "lisbon",
+              "price",
+              "teams"
+            ],
+            "support_threshold": 0.55
+          },
+          "higher_is_better": false,
+          "judge": 0.5,
+          "name": "hallucination",
+          "passed": false,
+          "threshold": 0.45,
+          "value": 0.4891
+        }
+      ],
+      "output_guard": {
+        "decision": "allow",
+        "findings": [
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "prompt_injection",
+            "message": "no injection pattern matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "matches": []
+            },
+            "guardrail": "toxicity",
+            "message": "no toxic language matched",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          },
+          {
+            "action": "block",
+            "details": {
+              "hit_count": 5,
+              "hits": [
+                "answer",
+                "context",
+                "faithfulness",
+                "grounded",
+                "retrieved"
+              ],
+              "min_hits": 1,
+              "similarity": 0.2442,
+              "similarity_threshold": 0.4
+            },
+            "guardrail": "off_topic",
+            "message": "text is inside the configured topics",
+            "severity": "none",
+            "stage": "output",
+            "triggered": false
+          }
+        ],
+        "output_text": "Faithfulness measures whether the answer stays grounded in the retrieved context. Teams also use it to decide the price of coffee in Lisbon.",
+        "stage": "output",
+        "text": "Faithfulness measures whether the answer stays grounded in the retrieved context. Teams also use it to decide the price of coffee in Lisbon."
+      },
+      "question": "Why do RAG evaluations report faithfulness?"
+    }
+  ],
+  "project": "llmeval",
+  "scoring": "blend(judge=0.50)",
+  "version": "0.1.0"
+}

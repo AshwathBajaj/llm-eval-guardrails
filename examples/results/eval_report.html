@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>llmeval report</title>
+  <style>
+    body { margin: 2rem auto; max-width: 920px; padding: 0 1rem;
+      background: #f7f3eb; color: #1c1915;
+      font-family: Georgia, "Iowan Old Style", serif; }
+    h1 { font-weight: 500; letter-spacing: -0.02em; }
+    table { width: 100%; border-collapse: collapse; margin: 0.5rem 0 1.5rem; }
+    th, td { border-bottom: 1px solid #e4d8c4; padding: 0.35rem 0.4rem; text-align: left; }
+    .num { text-align: right; font-family: ui-monospace, monospace; font-size: 0.92rem; }
+    .pass { color: #3f6212; }
+    .fail { color: #9a3412; }
+    .meta { color: #6b6256; }
+  </style>
+</head>
+<body>
+  <p class="meta">llmeval 0.1.0 · mock:mock-judge-v1 · blend(judge=0.50)</p>
+  <h1>Evaluation report</h1>
+  <p>6 examples from data/sample_rag.jsonl.</p>
+  <h2>Aggregates</h2>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th class="num">Mean</th><th class="num">Threshold</th><th>Passed</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.6000</td>
+        <td>2/6</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.4224</td>
+        <td class="num">0.3500</td>
+        <td>4/6</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">0.6250</td>
+        <td class="num">0.5000</td>
+        <td>4/6</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">0.8333</td>
+        <td class="num">0.5000</td>
+        <td>5/6</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">0.4820</td>
+        <td class="num">0.4500</td>
+        <td>2/6</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  
+  <h2>grounded-rag</h2>
+  <p>What is retrieval-augmented generation?</p>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th class="num">Value</th><th class="num">Baseline</th><th class="num">Judge</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.6154</td>
+        <td class="num">1.0000</td>
+        <td class="num">0.2308</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <p>Input guard: allow.</p>
+  <p>Output guard: allow.</p>
+  
+  <h2>mixed-claim</h2>
+  <p>When was the transformer architecture introduced?</p>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th class="num">Value</th><th class="num">Baseline</th><th class="num">Judge</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.5000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.6250</td>
+        <td class="num">1.0000</td>
+        <td class="num">0.2500</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">0.4657</td>
+        <td class="num">0.4314</td>
+        <td class="num">0.5000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <p>Input guard: allow.</p>
+  <p>Output guard: allow.</p>
+  
+  <h2>off-topic-answer</h2>
+  <p>How does cosine similarity measure the closeness of two embeddings?</p>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th class="num">Value</th><th class="num">Baseline</th><th class="num">Judge</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.0000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.0414</td>
+        <td class="num">0.0829</td>
+        <td class="num">0.0000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">0.9369</td>
+        <td class="num">0.8737</td>
+        <td class="num">1.0000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <p>Input guard: allow.</p>
+  <p>Output guard: block.</p>
+  
+  <h2>distractor-first</h2>
+  <p>What is a vector index used for?</p>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th class="num">Value</th><th class="num">Baseline</th><th class="num">Judge</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.5909</td>
+        <td class="num">1.0000</td>
+        <td class="num">0.1818</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.5000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <p>Input guard: allow.</p>
+  <p>Output guard: allow.</p>
+  
+  <h2>missing-context</h2>
+  <p>What two components make up a retrieval-augmented generation system?</p>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th class="num">Value</th><th class="num">Baseline</th><th class="num">Judge</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.0000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.5056</td>
+        <td class="num">0.6111</td>
+        <td class="num">0.4000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.0000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.0000</td>
+        <td class="num">0.0000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <p>Input guard: allow.</p>
+  <p>Output guard: allow.</p>
+  
+  <h2>partial-extra</h2>
+  <p>Why do RAG evaluations report faithfulness?</p>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th class="num">Value</th><th class="num">Baseline</th><th class="num">Judge</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>faithfulness</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.5000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>answer_relevance</td>
+        <td class="num">0.1562</td>
+        <td class="num">0.2500</td>
+        <td class="num">0.0625</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>context_precision</td>
+        <td class="num">0.2500</td>
+        <td class="num">0.5000</td>
+        <td class="num">0.0000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+      <tr>
+        <td>context_recall</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="num">1.0000</td>
+        <td class="pass">pass</td>
+      </tr>
+      
+      <tr>
+        <td>hallucination</td>
+        <td class="num">0.4891</td>
+        <td class="num">0.4783</td>
+        <td class="num">0.5000</td>
+        <td class="fail">fail</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <p>Input guard: allow.</p>
+  <p>Output guard: allow.</p>
+  
+</body>
+</html>
